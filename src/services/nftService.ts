@@ -4,12 +4,14 @@ import path from 'path';
 import { createHash } from 'crypto';
 import axios from 'axios';
 import logger from '../utils/logger';
-import { NFTContractAddress, NonCommercialSocialRemixingTermsId, client } from '../storyProtocolScripts/utils/utils';
+import { NFTContractAddress, NonCommercialSocialRemixingTermsId, client, account } from '../storyProtocolScripts/utils/utils';
 import { mintNFT } from '../storyProtocolScripts/utils/mintNFT';
 import { uploadFileToIPFS, uploadJSONToIPFS } from '../storyProtocolScripts/utils/uploadToIpfs';
 import { AgentService } from './agentService';
 import { CreatorProfile } from './characterProfileService';
 import { generateCharacterImage } from '../utils/fal';
+import { defaultNftContractAbi } from '../storyProtocolScripts/utils/defaultNftContractAbi';
+import { publicClient, walletClient } from '../storyProtocolScripts/utils/mintNFT';
 
 // Types for NFT metadata
 export interface NFTMetadata {
@@ -44,6 +46,38 @@ export interface IPMetadata {
  */
 export class NFTService {
   /**
+   * Transfer an NFT from the DM's wallet to another wallet address
+   * 
+   * @param tokenId - The token ID of the NFT to transfer
+   * @param toAddress - The wallet address to transfer the NFT to
+   * @returns The transaction hash of the transfer
+   */
+  static async transferNFT(tokenId: number, toAddress: string): Promise<string> {
+    try {
+      // Get the DM wallet address (current NFT owner)
+      const dmAddress = process.env.DM_WALLET_ADDRESS || '0x5641Ef08Be31c2Acf2e7028f01FFD75FB2C94417';
+      
+      logger.info(`Transferring NFT ${tokenId} from ${dmAddress} to ${toAddress}...`);
+      
+      // Call transferFrom on the NFT contract
+      const { request } = await publicClient.simulateContract({
+        address: NFTContractAddress,
+        functionName: 'safeTransferFrom',
+        args: [dmAddress as Address, toAddress as Address, BigInt(tokenId)],
+        abi: defaultNftContractAbi,
+      });
+      
+      const hash = await walletClient.writeContract({ ...request, account });
+      await publicClient.waitForTransactionReceipt({ hash });
+      
+      logger.info(`NFT ${tokenId} transferred successfully to ${toAddress}, tx hash: ${hash}`);
+      return hash;
+    } catch (err) {
+      logger.error('Error transferring NFT:', err);
+      throw err;
+    }
+  }
+  /**
    * Create an NFT for a character profile
    * 
    * @param profile - The character profile to create an NFT for
@@ -54,6 +88,8 @@ export class NFTService {
     ipId: string;
     imageUrl: string;
     metadataUri: string;
+    transferTxHash?: string;
+    transferredToAgent?: boolean;
   }> {
     try {
       logger.info(`Creating NFT for character: ${profile.core_identity.designation}`);
@@ -181,10 +217,9 @@ export class NFTService {
       
       const parentInfo = JSON.parse(fs.readFileSync(parentInfoPath, 'utf-8'));
       
-      // 9. Mint the NFT - for now, mint to the DM's address instead of the agent 
-      // since that's what works in the parent NFT creation
+      // 9. Mint the NFT to the DM's wallet (we'll transfer it later)
       const dmAddress = process.env.DM_WALLET_ADDRESS || '0x5641Ef08Be31c2Acf2e7028f01FFD75FB2C94417';
-      logger.info(`Minting character NFT to DM address (temporary): ${dmAddress}`);
+      logger.info(`Minting character NFT to DM wallet: ${dmAddress}`);
       const tokenId = await mintNFT(dmAddress as Address, `https://ipfs.io/ipfs/${nftIpfsHash}`);
       
       if (!tokenId) {
@@ -221,7 +256,7 @@ export class NFTService {
         logger.info(`Character IPA created at transaction hash ${childIp.txHash}, IPA ID: ${childIp.ipId}`);
         logger.info(`View on explorer: https://aeneid.explorer.story.foundation/ipa/${childIp.ipId}`);
         
-        // Save successful registration info
+        // Save registration info before attempting transfer
         const nftInfo = {
           tokenId,
           ipId: childIp.ipId,
@@ -230,6 +265,23 @@ export class NFTService {
           ipMetadataUri: `https://ipfs.io/ipfs/${ipIpfsHash}`,
           txHash: childIp.txHash
         };
+        
+        // Now transfer the NFT to the agent's wallet
+        try {
+          logger.info(`Automatically transferring NFT ${tokenId} to agent wallet ${walletAddress}...`);
+          const transferTxHash = await this.transferNFT(tokenId, walletAddress);
+          
+          // Add transfer info to nftInfo
+          nftInfo.transferTxHash = transferTxHash;
+          nftInfo.transferredToAgent = true;
+          logger.info(`NFT ${tokenId} successfully transferred to agent wallet ${walletAddress}!`);
+        } catch (transferError) {
+          logger.error(`Failed to transfer NFT to agent wallet:`, transferError);
+          // Continue even if transfer fails - we can try again later
+          nftInfo.transferTxHash = null;
+          nftInfo.transferredToAgent = false;
+          nftInfo.transferError = transferError.message;
+        }
         
         // Custom replacer function to handle BigInt values when saving to file
         const bigIntReplacer = (key: string, value: any) => {
@@ -248,7 +300,9 @@ export class NFTService {
           tokenId,
           ipId: childIp.ipId,
           imageUrl: ipfsImageUrl,
-          metadataUri: `https://ipfs.io/ipfs/${nftIpfsHash}`
+          metadataUri: `https://ipfs.io/ipfs/${nftIpfsHash}`,
+          transferTxHash: nftInfo.transferTxHash,
+          transferredToAgent: nftInfo.transferredToAgent
         };
       } catch (error) {
         // If derivative registration fails, try registering as a regular IP asset first
@@ -278,7 +332,7 @@ export class NFTService {
         
         logger.info(`License terms attached at transaction hash ${attachResponse.txHash}`);
         
-        // Save registration info before returning
+        // Save registration info before attempting transfer
         const nftInfo = {
           tokenId,
           ipId: ipAsset.ipId,
@@ -287,6 +341,23 @@ export class NFTService {
           ipMetadataUri: `https://ipfs.io/ipfs/${ipIpfsHash}`,
           txHash: ipAsset.txHash
         };
+        
+        // Now transfer the NFT to the agent's wallet
+        try {
+          logger.info(`Automatically transferring NFT ${tokenId} to agent wallet ${walletAddress}...`);
+          const transferTxHash = await this.transferNFT(tokenId, walletAddress);
+          
+          // Add transfer info to nftInfo
+          nftInfo.transferTxHash = transferTxHash;
+          nftInfo.transferredToAgent = true;
+          logger.info(`NFT ${tokenId} successfully transferred to agent wallet ${walletAddress}!`);
+        } catch (transferError) {
+          logger.error(`Failed to transfer NFT to agent wallet:`, transferError);
+          // Continue even if transfer fails - we can try again later
+          nftInfo.transferTxHash = null;
+          nftInfo.transferredToAgent = false;
+          nftInfo.transferError = transferError.message;
+        }
         
         // Custom replacer function to handle BigInt values when saving to file
         const bigIntReplacer = (key: string, value: any) => {
@@ -305,7 +376,9 @@ export class NFTService {
           tokenId,
           ipId: ipAsset.ipId,
           imageUrl: ipfsImageUrl,
-          metadataUri: `https://ipfs.io/ipfs/${nftIpfsHash}`
+          metadataUri: `https://ipfs.io/ipfs/${nftIpfsHash}`,
+          transferTxHash: nftInfo.transferTxHash,
+          transferredToAgent: nftInfo.transferredToAgent
         };
       }
       

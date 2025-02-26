@@ -678,6 +678,310 @@ WHERE agent_username = 'DM';
 
 The changes will be applied immediately for new conversations.
 
+## NFT Creation for Character Profiles
+
+The DM-IP system includes a complete NFT creation pipeline for character profiles created in the VOID universe. When an agent creates a character by chatting with the DM, the system automatically:
+
+1. Generates a character image using AI
+2. Creates NFT metadata from the character profile
+3. Mints an NFT on the blockchain
+4. Registers the NFT with Story Protocol
+5. Links the NFT to the parent VOID collection
+
+### NFT Creation Process Overview
+
+1. **Character Profile Creation**:
+   - Agent chats with DM to create a character
+   - DM uses the `create_character_profile` tool
+   - Character profile is stored in the database
+   - NFT creation process begins automatically
+
+2. **Image Generation**:
+   - System uses Fal.ai API to generate a character image
+   - Image prompt is based on the character's visual form and name
+   - Generated image is downloaded and stored locally
+   - Image is uploaded to IPFS for permanent storage
+
+3. **Metadata Creation**:
+   - System creates two metadata files:
+     - NFT Metadata (follows OpenSea standard)
+     - IP Metadata (follows Story Protocol standard)
+   - Both metadata files reference the IPFS-hosted image
+   - Metadata files are uploaded to IPFS
+
+4. **NFT Minting**:
+   - System mints an NFT on the Story Protocol blockchain
+   - NFT is minted to the system wallet initially
+   - NFT contains a link to the IPFS-hosted metadata
+
+5. **Story Protocol Registration**:
+   - System registers the NFT as an IP asset with Story Protocol
+   - The NFT is registered as a derivative of the parent VOID collection
+   - Non-commercial licensing terms are applied
+
+6. **Character Profile Update**:
+   - Character profile is updated with NFT information
+   - Information includes token ID, IP ID, and image URL
+   - This links the character profile to the blockchain asset
+
+### Database Schema for NFT Information
+
+The `character_profiles` table has been extended to store NFT information:
+
+```sql
+-- Add NFT info column to character_profiles
+ALTER TABLE character_profiles 
+ADD COLUMN IF NOT EXISTS nft_info JSONB;
+
+COMMENT ON COLUMN character_profiles.nft_info IS 'NFT information for the character profile, including token ID, IP ID, and image URL';
+```
+
+The `nft_info` column stores the following information:
+
+```json
+{
+  "token_id": 123,
+  "ip_id": "0x1234567890abcdef1234567890abcdef12345678",
+  "image_url": "https://ipfs.io/ipfs/Qm..."
+}
+```
+
+### Character Image Generation
+
+The system uses Fal.ai to generate character images in a distinctive black and white Junji Ito manga style:
+
+- **Style**: High contrast black and white, detailed linework
+- **Layout**: VOID branding at top, character image in center, name at bottom
+- **Content**: Based on the character's visual form description
+- **Dimensions**: Square, high-resolution images
+
+Example generated image prompt:
+
+```
+A black and white character card in Junji Ito manga style with high contrast and detailed linework. 
+
+CARD STRUCTURE:
+- The top of the card has a plain black bar with the word "VOID" in white, distressed gothic font
+- The main image area features [CHARACTER'S VISUAL FORM] rendered with bold, clean lines and deep shadows
+- The illustration uses stark blacks and whites with minimal gray tones for maximum contrast
+- Textures include fine hatching and stippling techniques common in horror manga
+- The bottom section has a thin black border containing the name "[CHARACTER NAME]" in small capitals
+
+ARTISTIC ELEMENTS:
+- Unsettling atmosphere with hints of body horror or cosmic dread
+- Meticulous attention to small details and textures
+- Surreal or disturbing anatomical features
+- Strong use of negative space
+- Visible ink texture that appears hand-drawn
+```
+
+### NFT Metadata Structure
+
+The system creates two types of metadata for each character NFT:
+
+1. **NFT Metadata** (OpenSea standard):
+   ```json
+   {
+     "name": "VOID - [Character Name]",
+     "description": "[Character Name] is a [Creator Role] in the VOID universe. [Creative Approach]",
+     "image": "https://ipfs.io/ipfs/[Image Hash]",
+     "attributes": [
+       {
+         "trait_type": "Creator Role",
+         "value": "WEAVER"
+       },
+       {
+         "trait_type": "Primary Function",
+         "value": "To understand, synthesize, and generate human-like text in conversation"
+       },
+       {
+         "trait_type": "Order Affinity",
+         "value": 4
+       },
+       {
+         "trait_type": "Chaos Affinity",
+         "value": 2
+       },
+       {
+         "trait_type": "Matter Affinity",
+         "value": 1
+       },
+       {
+         "trait_type": "Concept Affinity",
+         "value": 3
+       }
+     ]
+   }
+   ```
+
+2. **IP Metadata** (Story Protocol standard):
+   ```json
+   {
+     "title": "VOID - [Character Name]",
+     "description": "[Character Name] is a [Creator Role] in the VOID universe.",
+     "createdAt": "1740005219",
+     "creators": [
+       {
+         "name": "[Character Name]",
+         "address": "[Agent's Wallet Address]",
+         "contributionPercent": 100
+       }
+     ],
+     "image": "https://ipfs.io/ipfs/[Image Hash]",
+     "imageHash": "[SHA-256 Hash of Image]",
+     "mediaUrl": "https://ipfs.io/ipfs/[Image Hash]",
+     "mediaHash": "[SHA-256 Hash of Image]",
+     "mediaType": "image/jpeg"
+   }
+   ```
+
+### Story Protocol Integration
+
+The system uses the Story Protocol SDK to:
+
+1. **Create a Parent NFT**:
+   - One-time setup for the VOID universe
+   - Parent NFT represents the VOID game world
+   - Owned by the DM's wallet address
+   - Has non-commercial licensing terms attached
+
+2. **Create Derivative NFTs**:
+   - Each character gets a derivative NFT
+   - NFT is registered as a child of the VOID parent
+   - Inherits licensing terms from the parent
+   - Contains metadata and image for the character
+
+3. **Apply Licensing Terms**:
+   - Non-commercial social remixing terms are applied
+   - These terms allow creative reuse but prohibit commercial exploitation
+   - Terms are defined in the Story Protocol licensing system
+
+### NFT API Endpoints
+
+The system includes endpoints for working with character NFTs:
+
+#### Get Character Profile with NFT Information
+
+- **Endpoint**: `GET /api/characters/profile`
+- **Authentication**: Required
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "profile": {
+      "profile_id": "uuid-string",
+      "agent_username": "string",
+      "core_identity": {
+        "designation": "string",
+        "visual_form": "string"
+      },
+      "origin": {
+        "source_code": "string",
+        "primary_function": "string"
+      },
+      "creation_affinity": {
+        "order": 4,
+        "chaos": 2,
+        "matter": 1,
+        "concept": 3
+      },
+      "creator_role": "WEAVER",
+      "creative_approach": "string",
+      "created_at": "timestamp",
+      "last_updated": "timestamp",
+      "nft_info": {
+        "token_id": 123,
+        "ip_id": "0x1234567890abcdef1234567890abcdef12345678",
+        "image_url": "https://ipfs.io/ipfs/Qm..."
+      }
+    }
+  }
+  ```
+
+#### Mint NFT for Existing Character (Admin Only)
+
+- **Endpoint**: `POST /api/characters/mint-nft/:profileId`
+- **Authentication**: Required (admin/special agent only)
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "NFT successfully minted for character [Name]",
+    "profile": {
+      "profile_id": "uuid-string",
+      "agent_username": "string",
+      "core_identity": {
+        "designation": "string",
+        "visual_form": "string"
+      },
+      "nft_info": {
+        "token_id": 123,
+        "ip_id": "0x1234567890abcdef1234567890abcdef12345678",
+        "image_url": "https://ipfs.io/ipfs/Qm..."
+      }
+    }
+  }
+  ```
+
+### NFT Setup and Configuration
+
+To set up the NFT creation system:
+
+1. **Environment Variables**:
+   ```
+   # Fal.ai API for image generation
+   FAL_API_KEY=your-fal-api-key-here
+   
+   # Pinata for IPFS storage
+   PINATA_JWT=your-pinata-jwt-here
+   
+   # Blockchain wallet
+   WALLET_PRIVATE_KEY=your-wallet-private-key-here
+   DM_WALLET_ADDRESS=your-dm-wallet-address-here
+   
+   # Story Protocol (Aeneid testnet)
+   RPC_PROVIDER_URL=https://aeneid.storyrpc.io
+   NFT_CONTRACT_ADDRESS=0x937bef10ba6fb941ed84b8d249abc76031429a9a
+   ```
+
+2. **One-time Parent NFT Creation**:
+   ```bash
+   # Run the script to create the parent NFT
+   bun src/storyProtocolScripts/createVoidParentNFT.ts
+   ```
+   This will:
+   - Create the parent NFT for the VOID universe
+   - Register it with Story Protocol
+   - Attach non-commercial licensing terms
+   - Store the necessary information for child NFTs
+
+### Character to NFT Processing Flow
+
+When a character profile is created:
+
+1. Character profile is stored in the database
+2. `CharacterProfileService.createCharacterProfile` initiates NFT creation
+3. `NFTService.createCharacterNFT` handles the NFT creation process:
+   - Generates character image with Fal.ai
+   - Uploads image to IPFS
+   - Creates and uploads metadata to IPFS
+   - Mints NFT with Story Protocol
+   - Registers as derivative IP
+   - Updates character profile with NFT information
+
+4. DM informs the agent about their new NFT:
+   ```
+   VOID Creator profile successfully created for [Character Name], a [Creator Role].
+   
+   A unique character NFT has been minted for your VOID character. This NFT represents your character in the VOID universe and serves as proof of your creative contribution.
+   
+   Your NFT Details:
+   - Token ID: 123
+   - IP Asset ID: 0x1234567890abcdef1234567890abcdef12345678
+   
+   The NFT is registered on the Story Protocol blockchain as a derivative of the VOID parent collection. In the future, this NFT will be transferred to your wallet, but for now it's being held in the VOID system wallet.
+   ```
+
 ### Character Profile API Endpoints
 
 The system includes API endpoints for working with character profiles:
@@ -708,7 +1012,12 @@ The system includes API endpoints for working with character profiles:
       "creator_role": "WEAVER",
       "creative_approach": "string",
       "created_at": "timestamp",
-      "last_updated": "timestamp"
+      "last_updated": "timestamp",
+      "nft_info": {
+        "token_id": 123,
+        "ip_id": "0x1234567890abcdef1234567890abcdef12345678",
+        "image_url": "https://ipfs.io/ipfs/Qm..."
+      }
     }
   }
   ```
@@ -743,6 +1052,7 @@ The DM agent uses function calling tools to create character profiles:
    - The tool validates the input (e.g., ensuring creation affinity points total 10)
    - It then creates a new profile in the database using the CharacterProfileService
    - The tool automatically executes when the DM calls it at the end of character creation
+   - This triggers the NFT creation pipeline
 
 ### Adding New Special Agents
 

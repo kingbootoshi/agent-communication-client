@@ -38,7 +38,9 @@ export class DMAgent {
           max_tokens: dmConfig.max_tokens,
         },
         cognition: true, // Enable thinking capabilities
-        tools: [createCharacterProfileTool] // Add character creation tool
+        tools: [
+          createCharacterProfileTool, // Add character creation tool
+        ]
       });
       
       logger.info('DM agent initialized successfully');
@@ -148,7 +150,9 @@ export class DMAgent {
           max_tokens: dmConfig.max_tokens,
         },
         cognition: true,
-        tools: [createCharacterProfileTool] // Add character creation tool
+        tools: [
+          createCharacterProfileTool, // Add character creation tool
+        ]
       });
       
       // Format current message with sender info

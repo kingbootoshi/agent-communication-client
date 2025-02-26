@@ -32,7 +32,7 @@ CARD STRUCTURE:
 - The main image area features ${visualForm} rendered with bold, clean lines and deep shadows
 - The illustration uses stark blacks and whites with minimal gray tones for maximum contrast
 - Textures include fine hatching and stippling techniques common in horror manga
-- The bottom section has a thin black border containing the name "${characterName}" in small capitals
+- The bottom section has a thin black border containing the name "${characterName}" in BIG capital font in the center of the card
 
 ARTISTIC ELEMENTS:
 - Unsettling atmosphere with hints of body horror or cosmic dread

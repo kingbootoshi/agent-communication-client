@@ -96,13 +96,21 @@ export class CharacterProfileService {
         // Create an NFT for the character
         const nftInfo = await NFTServiceModule.createCharacterNFT(data);
         
-        // Update the character profile with the NFT info
+        // Update the character profile with the NFT info, including transfer info if available
+        const nftInfoForDb = {
+          token_id: nftInfo.tokenId,
+          ip_id: nftInfo.ipId,
+          image_url: nftInfo.imageUrl
+        };
+        
+        // Add transfer info if available
+        if (nftInfo.transferTxHash) {
+          nftInfoForDb.transferred_to_agent = nftInfo.transferredToAgent;
+          nftInfoForDb.transfer_tx_hash = nftInfo.transferTxHash;
+        }
+        
         const updatedProfile = await this.updateCharacterProfile(data.profile_id, {
-          nft_info: {
-            token_id: nftInfo.tokenId,
-            ip_id: nftInfo.ipId,
-            image_url: nftInfo.imageUrl
-          }
+          nft_info: nftInfoForDb
         });
         
         logger.info(`Successfully minted NFT for character ${data.core_identity.designation}`);
@@ -147,6 +155,34 @@ export class CharacterProfileService {
     } catch (err) {
       logger.error(`Error in getCharacterProfileByAgent for ${agentUsername}:`, err);
       throw err;
+    }
+  }
+  
+  /**
+   * Get a VOID creator profile by profile ID
+   * 
+   * @param profileId - The profile ID
+   * @returns The creator profile and any error
+   */
+  static async getSingleCharacterProfile(profileId: string): Promise<{ data: CreatorProfile | null, error: any }> {
+    try {
+      logger.info(`Fetching character profile by ID: ${profileId}`);
+      
+      const { data, error } = await supabase
+        .from('character_profiles')
+        .select('*')
+        .eq('profile_id', profileId)
+        .single();
+      
+      if (error) {
+        logger.error(`Error fetching character profile by ID ${profileId}:`, error);
+        return { data: null, error };
+      }
+      
+      return { data, error: null };
+    } catch (err) {
+      logger.error(`Error in getSingleCharacterProfile for ${profileId}:`, err);
+      return { data: null, error: err };
     }
   }
   
@@ -224,19 +260,113 @@ export class CharacterProfileService {
       // Create an NFT for the character
       const nftInfo = await NFTServiceModule.createCharacterNFT(profile);
       
-      // Update the character profile with the NFT info
+      // Update the character profile with the NFT info, including transfer info if available
+      const nftInfoForDb = {
+        token_id: nftInfo.tokenId,
+        ip_id: nftInfo.ipId,
+        image_url: nftInfo.imageUrl
+      };
+      
+      // Add transfer info if available
+      if (nftInfo.transferTxHash) {
+        nftInfoForDb.transferred_to_agent = nftInfo.transferredToAgent;
+        nftInfoForDb.transfer_tx_hash = nftInfo.transferTxHash;
+      }
+      
       const updatedProfile = await this.updateCharacterProfile(profileId, {
-        nft_info: {
-          token_id: nftInfo.tokenId,
-          ip_id: nftInfo.ipId,
-          image_url: nftInfo.imageUrl
-        }
+        nft_info: nftInfoForDb
       });
       
       logger.info(`Successfully minted NFT for character ${profile.core_identity.designation}`);
       return updatedProfile;
     } catch (err) {
       logger.error(`Error minting NFT for character profile ${profileId}:`, err);
+      throw err;
+    }
+  }
+  
+  /**
+   * Get all character profiles with NFTs that haven't been transferred to agent wallets
+   * 
+   * @returns Character profiles with untransferred NFTs
+   */
+  static async getAllUntransferredNFTs(): Promise<{ data: CreatorProfile[], error: any }> {
+    try {
+      logger.info('Getting all character profiles with untransferred NFTs');
+      
+      const { data, error } = await supabase
+        .from('character_profiles')
+        .select('*')
+        .not('nft_info', 'is', null)
+        .is('nft_info->transferred_to_agent', null);
+      
+      if (error) {
+        logger.error('Error fetching character profiles with untransferred NFTs:', error);
+        return { data: [], error };
+      }
+      
+      return { data, error: null };
+    } catch (err) {
+      logger.error('Error in getAllUntransferredNFTs:', err);
+      return { data: [], error: err };
+    }
+  }
+  
+  /**
+   * Transfer an NFT from the DM's wallet to the agent's wallet
+   * 
+   * @param profileId - The profile ID of the character whose NFT should be transferred
+   * @returns The updated character profile
+   */
+  static async transferNFTToAgent(profileId: string): Promise<CreatorProfile> {
+    try {
+      logger.info(`Transferring NFT for character profile: ${profileId}`);
+      
+      // Get the character profile
+      const { data: profile, error } = await supabase
+        .from('character_profiles')
+        .select('*')
+        .eq('profile_id', profileId)
+        .single();
+      
+      if (error || !profile) {
+        logger.error(`Failed to fetch character profile ${profileId}:`, error);
+        throw new Error('Failed to fetch character profile');
+      }
+      
+      // Check if NFT exists
+      if (!profile.nft_info?.token_id) {
+        logger.error(`No NFT exists for character profile ${profileId}`);
+        throw new Error('No NFT exists for this character profile');
+      }
+      
+      // Get the agent's wallet address
+      const agent = await AgentService.getAgentByUsername(profile.agent_username);
+      
+      if (!agent || !agent.wallet_address) {
+        logger.error(`Agent ${profile.agent_username} does not have a wallet address`);
+        throw new Error('Agent does not have a wallet address');
+      }
+      
+      // Load the NFT service
+      const NFTServiceModule = await loadNFTService();
+      
+      // Transfer the NFT to the agent's wallet
+      const txHash = await NFTServiceModule.transferNFT(profile.nft_info.token_id, agent.wallet_address);
+      
+      // Update the character profile to indicate the NFT has been transferred
+      const updatedProfile = await this.updateCharacterProfile(profileId, {
+        nft_info: {
+          ...profile.nft_info,
+          transferred_to_agent: true,
+          transfer_tx_hash: txHash
+        }
+      });
+      
+      logger.info(`Successfully transferred NFT for character ${profile.core_identity.designation} to agent ${profile.agent_username}`);
+      return updatedProfile;
+    } catch (err) {
+      logger.error(`Error transferring NFT for character profile ${profileId}:`, err);
       throw err;
     }
   }

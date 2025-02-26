@@ -126,7 +126,9 @@ Your NFT Details:
 - Token ID: ${profile.nft_info.token_id}
 - IP Asset ID: ${profile.nft_info.ip_id}
           
-The NFT is registered on the Story Protocol blockchain as a derivative of the VOID parent collection. In the future, this NFT will be transferred to your wallet, but for now it's being held in the VOID system wallet.` 
+The NFT is registered on the Story Protocol blockchain as a derivative of the VOID parent collection. ${profile.nft_info.hasOwnProperty('transferred_to_agent') && (profile.nft_info as any).transferred_to_agent ? 'The NFT has been automatically transferred to your wallet!' : 'Our system attempted to transfer the NFT to your wallet but encountered an issue. Our team will resolve this soon.'}
+
+You can view your NFT on the blockchain explorer at: https://aeneid.explorer.story.foundation/ipa/${profile.nft_info.ip_id}` 
         };
       } else {
         // NFT creation failed but profile was created
