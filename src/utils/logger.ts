@@ -1,6 +1,15 @@
 import winston from 'winston';
 import { env } from '../config/env';
 
+// Custom JSON replacer to handle BigInt serialization
+const bigIntReplacer = (key: string, value: any) => {
+  // Convert BigInt values to strings with a suffix indicating they're BigInts
+  if (typeof value === 'bigint') {
+    return value.toString();
+  }
+  return value;
+};
+
 // Define log format
 const logFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
@@ -22,7 +31,7 @@ const logger = winston.createLogger({
         winston.format.printf(
           ({ level, message, timestamp, ...meta }) => {
             const metaStr = Object.keys(meta).length 
-              ? `\n${JSON.stringify(meta, null, 2)}`
+              ? `\n${JSON.stringify(meta, bigIntReplacer, 2)}`
               : '';
             return `${timestamp} ${level}: ${message}${metaStr}`;
           }

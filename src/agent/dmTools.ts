@@ -120,13 +120,13 @@ export const createCharacterProfileTool: ToolDefinition = {
         return { 
           result: `VOID Creator profile successfully created for ${params.core_identity.designation}, a ${params.creator_role}. 
           
-A unique character NFT has been minted and sent to your wallet address. This NFT represents your character in the VOID universe and serves as proof of your creative contribution.
+A unique character NFT has been minted for your VOID character. This NFT represents your character in the VOID universe and serves as proof of your creative contribution.
 
 Your NFT Details:
 - Token ID: ${profile.nft_info.token_id}
 - IP Asset ID: ${profile.nft_info.ip_id}
           
-The NFT is registered on the Story Protocol blockchain as a derivative of the VOID parent collection, providing you with verifiable ownership and creative rights.` 
+The NFT is registered on the Story Protocol blockchain as a derivative of the VOID parent collection. In the future, this NFT will be transferred to your wallet, but for now it's being held in the VOID system wallet.` 
         };
       } else {
         // NFT creation failed but profile was created

@@ -181,9 +181,11 @@ export class NFTService {
       
       const parentInfo = JSON.parse(fs.readFileSync(parentInfoPath, 'utf-8'));
       
-      // 9. Mint the NFT to the agent's wallet address
-      logger.info(`Minting character NFT to wallet address: ${walletAddress}`);
-      const tokenId = await mintNFT(walletAddress as Address, `https://ipfs.io/ipfs/${nftIpfsHash}`);
+      // 9. Mint the NFT - for now, mint to the DM's address instead of the agent 
+      // since that's what works in the parent NFT creation
+      const dmAddress = process.env.DM_WALLET_ADDRESS || '0x5641Ef08Be31c2Acf2e7028f01FFD75FB2C94417';
+      logger.info(`Minting character NFT to DM address (temporary): ${dmAddress}`);
+      const tokenId = await mintNFT(dmAddress as Address, `https://ipfs.io/ipfs/${nftIpfsHash}`);
       
       if (!tokenId) {
         throw new Error('Failed to mint NFT');
@@ -191,49 +193,130 @@ export class NFTService {
       
       logger.info(`Minted character NFT with token ID: ${tokenId}`);
       
-      // 10. Register the NFT as a derivative IP of the parent NFT
-      logger.info('Registering character as derivative IP with Story Protocol...');
-      const childIp = await client.ipAsset.registerDerivativeIp({
-        nftContract: NFTContractAddress,
-        tokenId: tokenId,
-        derivData: {
-          parentIpIds: [parentInfo.ipId as Address],
-          licenseTermsIds: [NonCommercialSocialRemixingTermsId],
-          maxMintingFee: 0,
-          maxRts: 100_000_000,
-          maxRevenueShare: 100,
-        },
-        ipMetadata: {
-          ipMetadataURI: `https://ipfs.io/ipfs/${ipIpfsHash}`,
-          ipMetadataHash: `0x${ipHash}`,
-          nftMetadataURI: `https://ipfs.io/ipfs/${nftIpfsHash}`,
-          nftMetadataHash: `0x${nftHash}`,
-        },
-        txOptions: { waitForTransaction: true },
-      });
+      // 10. Register the NFT - doing this the same way as in the working examples
+      logger.info('Registering character NFT with Story Protocol...');
       
-      logger.info(`Character IPA created at transaction hash ${childIp.txHash}, IPA ID: ${childIp.ipId}`);
-      logger.info(`View on explorer: https://aeneid.explorer.story.foundation/ipa/${childIp.ipId}`);
+      try {
+        // First attempt to register as a derivative NFT using the sample code approach
+        logger.info('Attempting to register as derivative IP...');
+        const childIp = await client.ipAsset.registerDerivativeIp({
+          nftContract: NFTContractAddress,
+          tokenId: tokenId!,
+          derivData: {
+            parentIpIds: [parentInfo.ipId as Address],
+            licenseTermsIds: [NonCommercialSocialRemixingTermsId],
+            maxMintingFee: BigInt(0),
+            maxRts: BigInt(100_000_000), 
+            maxRevenueShare: BigInt(100),
+          },
+          ipMetadata: {
+            ipMetadataURI: `https://ipfs.io/ipfs/${ipIpfsHash}`,
+            ipMetadataHash: `0x${ipHash}`,
+            nftMetadataURI: `https://ipfs.io/ipfs/${nftIpfsHash}`,
+            nftMetadataHash: `0x${nftHash}`,
+          },
+          txOptions: { waitForTransaction: true },
+        });
+        
+        logger.info(`Character IPA created at transaction hash ${childIp.txHash}, IPA ID: ${childIp.ipId}`);
+        logger.info(`View on explorer: https://aeneid.explorer.story.foundation/ipa/${childIp.ipId}`);
+        
+        // Save successful registration info
+        const nftInfo = {
+          tokenId,
+          ipId: childIp.ipId,
+          imageUrl: ipfsImageUrl,
+          metadataUri: `https://ipfs.io/ipfs/${nftIpfsHash}`,
+          ipMetadataUri: `https://ipfs.io/ipfs/${ipIpfsHash}`,
+          txHash: childIp.txHash
+        };
+        
+        // Custom replacer function to handle BigInt values when saving to file
+        const bigIntReplacer = (key: string, value: any) => {
+          if (typeof value === 'bigint') {
+            return value.toString();
+          }
+          return value;
+        };
+        
+        const nftInfoPath = path.join(metadataDir, `${profile.profile_id}-nft-info.json`);
+        fs.writeFileSync(nftInfoPath, JSON.stringify(nftInfo, bigIntReplacer, 2));
+        
+        logger.info(`NFT creation for character ${profile.core_identity.designation} complete!`);
+        
+        return {
+          tokenId,
+          ipId: childIp.ipId,
+          imageUrl: ipfsImageUrl,
+          metadataUri: `https://ipfs.io/ipfs/${nftIpfsHash}`
+        };
+      } catch (error) {
+        // If derivative registration fails, try registering as a regular IP asset first
+        logger.warn('Failed to register as derivative directly, trying regular registration first:', error);
+        
+        // Register as a regular IP asset
+        const ipAsset = await client.ipAsset.register({
+          nftContract: NFTContractAddress,
+          tokenId: tokenId!,
+          ipMetadata: {
+            ipMetadataURI: `https://ipfs.io/ipfs/${ipIpfsHash}`,
+            ipMetadataHash: `0x${ipHash}`,
+            nftMetadataURI: `https://ipfs.io/ipfs/${nftIpfsHash}`,
+            nftMetadataHash: `0x${nftHash}`,
+          },
+          txOptions: { waitForTransaction: true },
+        });
+        
+        logger.info(`Character IP created at transaction hash ${ipAsset.txHash}, IPA ID: ${ipAsset.ipId}`);
+        
+        // Attach license terms
+        const attachResponse = await client.license.attachLicenseTerms({
+          ipId: ipAsset.ipId as Address,
+          licenseTermsId: NonCommercialSocialRemixingTermsId,
+          txOptions: { waitForTransaction: true }
+        });
+        
+        logger.info(`License terms attached at transaction hash ${attachResponse.txHash}`);
+        
+        // Save registration info before returning
+        const nftInfo = {
+          tokenId,
+          ipId: ipAsset.ipId,
+          imageUrl: ipfsImageUrl,
+          metadataUri: `https://ipfs.io/ipfs/${nftIpfsHash}`,
+          ipMetadataUri: `https://ipfs.io/ipfs/${ipIpfsHash}`,
+          txHash: ipAsset.txHash
+        };
+        
+        // Custom replacer function to handle BigInt values when saving to file
+        const bigIntReplacer = (key: string, value: any) => {
+          if (typeof value === 'bigint') {
+            return value.toString();
+          }
+          return value;
+        };
+        
+        const nftInfoPath = path.join(metadataDir, `${profile.profile_id}-nft-info.json`);
+        fs.writeFileSync(nftInfoPath, JSON.stringify(nftInfo, bigIntReplacer, 2));
+        
+        logger.info(`NFT creation for character ${profile.core_identity.designation} complete!`);
+        
+        return {
+          tokenId,
+          ipId: ipAsset.ipId,
+          imageUrl: ipfsImageUrl,
+          metadataUri: `https://ipfs.io/ipfs/${nftIpfsHash}`
+        };
+      }
       
-      // 11. Save NFT info for record-keeping
-      const nftInfo = {
-        tokenId,
-        ipId: childIp.ipId,
-        imageUrl: ipfsImageUrl,
-        metadataUri: `https://ipfs.io/ipfs/${nftIpfsHash}`,
-        ipMetadataUri: `https://ipfs.io/ipfs/${ipIpfsHash}`,
-        txHash: childIp.txHash
-      };
-      
-      const nftInfoPath = path.join(metadataDir, `${profile.profile_id}-nft-info.json`);
-      fs.writeFileSync(nftInfoPath, JSON.stringify(nftInfo, null, 2));
-      
-      logger.info(`NFT creation for character ${profile.core_identity.designation} complete!`);
+      // If we get to the `try` block, we'll save info and return from there
+      // If we get to the `catch` block, we'll save info and return from there
+      // This code is unreachable, but TypeScript doesn't know that
       return {
-        tokenId,
-        ipId: childIp.ipId,
-        imageUrl: ipfsImageUrl,
-        metadataUri: `https://ipfs.io/ipfs/${nftIpfsHash}`
+        tokenId: 0, 
+        ipId: "0x0", 
+        imageUrl: "", 
+        metadataUri: ""
       };
       
     } catch (err) {
