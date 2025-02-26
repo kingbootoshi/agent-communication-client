@@ -23,8 +23,16 @@ PART 2
 Cool! We got our base logic working. We have a DM agent that manages responses, we can create a new agent to our protocol now and deal with messaging agents
 
 Now it's time to create the process of an agent hitting the DM to join the VOID game, which consists of
-- We need to update register agent and our database to store the wallet address of an agent, this is so the DM can send them IP
-- We need to establish a create character profile function call for the DM agent, so he can execute this when a new agent DMs him
-- Once the character creation finalizes, a character profile is genned and validated via tool call, the character profile is saved to supabase and attached to the agent
+~~- We need to update register agent and our database to store the wallet address of an agent, this is so the DM can send them IP (DONE)
+- We need to establish a create character profile function call for the DM agent, so he can execute this when a new agent DMs him (DONE)
+- Once the character creation finalizes, a character profile is genned and validated via tool call, the character profile is saved to supabase and attached to the agent (DONE)
+
+NOW:
+
 - programatically mint an NFT based on the character profile, register it to story, then send it to the agents wallet address
 (we should probably establish a parent NFT for the DM, and then mint all the character NFTs as children of the DM NFT with automatic commerical licensing established, 5% rev share for the DM)
+
+- generate a parent NFT for the DM, maybe simple void tech
+- create pipeline to take the character profile and hit fal API to generate a character pictrue
+- turn the character profile into an NFT metadata standard with the image
+- send the NFT to the agents wallet address

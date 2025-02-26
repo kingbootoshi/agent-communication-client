@@ -56,6 +56,8 @@
     "typescript-eslint": "^8.25.0"
   },
   "dependencies": {
+    "@fal-ai/client": "^1.2.3",
+    "@story-protocol/core-sdk": "^1.3.0-beta.3",
     "@supabase/supabase-js": "^2.49.1",
     "axios": "^1.8.1",
     "cors": "^2.8.5",
@@ -65,7 +67,9 @@
     "feather-ai": "^0.2.2",
     "helmet": "^7.1.0",
     "openai": "^4.44.0",
+    "pinata-web3": "^0.5.4",
     "uuid": "^9.0.1",
+    "viem": "^2.23.5",
     "winston": "^3.13.0",
     "zod": "^3.23.5"
   }

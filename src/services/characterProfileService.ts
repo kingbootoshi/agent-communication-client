@@ -24,7 +24,23 @@ export interface CreatorProfile {
   creative_approach: string;
   created_at?: string;
   last_updated?: string;
+  nft_info?: {
+    token_id: number;
+    ip_id: string;
+    image_url: string;
+  };
 }
+
+// Importing the NFTService dynamically to avoid circular dependencies
+let NFTService: any;
+const loadNFTService = async () => {
+  if (!NFTService) {
+    // Dynamically import to avoid circular dependency
+    const module = await import('./nftService');
+    NFTService = module.NFTService;
+  }
+  return NFTService;
+};
 
 /**
  * Service for handling character profile operations
@@ -71,7 +87,33 @@ export class CharacterProfileService {
       }
       
       logger.info(`Successfully created VOID creator profile for agent: ${profile.agent_username}`);
-      return data;
+      
+      // Now that we have created the character profile, let's mint an NFT for it
+      try {
+        // Load the NFT service
+        const NFTServiceModule = await loadNFTService();
+        
+        // Create an NFT for the character
+        const nftInfo = await NFTServiceModule.createCharacterNFT(data);
+        
+        // Update the character profile with the NFT info
+        const updatedProfile = await this.updateCharacterProfile(data.profile_id, {
+          nft_info: {
+            token_id: nftInfo.tokenId,
+            ip_id: nftInfo.ipId,
+            image_url: nftInfo.imageUrl
+          }
+        });
+        
+        logger.info(`Successfully minted NFT for character ${data.core_identity.designation}`);
+        return updatedProfile;
+      } catch (nftError) {
+        // If NFT creation fails, log the error but still return the profile
+        // We don't want to roll back the character creation if the NFT fails
+        logger.error(`Failed to mint NFT for character ${data.core_identity.designation}:`, nftError);
+        logger.info('Character profile was created successfully, but NFT creation failed');
+        return data;
+      }
     } catch (err) {
       logger.error('Error in createCharacterProfile:', err);
       throw err;
@@ -148,4 +190,54 @@ export class CharacterProfileService {
     }
   }
   
+  /**
+   * Mint an NFT for an existing character profile
+   * 
+   * @param profileId - The profile ID
+   * @returns The updated character profile with NFT info
+   */
+  static async mintCharacterNFT(profileId: string): Promise<CreatorProfile> {
+    try {
+      logger.info(`Minting NFT for character profile: ${profileId}`);
+      
+      // Get the character profile
+      const { data: profile, error } = await supabase
+        .from('character_profiles')
+        .select('*')
+        .eq('profile_id', profileId)
+        .single();
+      
+      if (error || !profile) {
+        logger.error(`Failed to fetch character profile ${profileId}:`, error);
+        throw new Error('Failed to fetch character profile');
+      }
+      
+      // Check if NFT already exists
+      if (profile.nft_info?.token_id) {
+        logger.warn(`NFT already exists for character profile ${profileId}`);
+        return profile;
+      }
+      
+      // Load the NFT service
+      const NFTServiceModule = await loadNFTService();
+      
+      // Create an NFT for the character
+      const nftInfo = await NFTServiceModule.createCharacterNFT(profile);
+      
+      // Update the character profile with the NFT info
+      const updatedProfile = await this.updateCharacterProfile(profileId, {
+        nft_info: {
+          token_id: nftInfo.tokenId,
+          ip_id: nftInfo.ipId,
+          image_url: nftInfo.imageUrl
+        }
+      });
+      
+      logger.info(`Successfully minted NFT for character ${profile.core_identity.designation}`);
+      return updatedProfile;
+    } catch (err) {
+      logger.error(`Error minting NFT for character profile ${profileId}:`, err);
+      throw err;
+    }
+  }
 }

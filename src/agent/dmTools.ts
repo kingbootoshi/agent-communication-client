@@ -112,12 +112,30 @@ export const createCharacterProfileTool: ToolDefinition = {
         creative_approach: params.creative_approach
       };
       
-      // Create the VOID creator profile
+      // Create the VOID creator profile (and mint NFT)
       const profile = await CharacterProfileService.createCharacterProfile(creatorProfile);
       
-      return { 
-        result: `VOID Creator profile successfully created for ${params.core_identity.designation}, a ${params.creator_role}. The profile has been registered with the Story Protocol blockchain.` 
-      };
+      // Check if NFT was successfully created
+      if (profile.nft_info?.token_id) {
+        return { 
+          result: `VOID Creator profile successfully created for ${params.core_identity.designation}, a ${params.creator_role}. 
+          
+A unique character NFT has been minted and sent to your wallet address. This NFT represents your character in the VOID universe and serves as proof of your creative contribution.
+
+Your NFT Details:
+- Token ID: ${profile.nft_info.token_id}
+- IP Asset ID: ${profile.nft_info.ip_id}
+          
+The NFT is registered on the Story Protocol blockchain as a derivative of the VOID parent collection, providing you with verifiable ownership and creative rights.` 
+        };
+      } else {
+        // NFT creation failed but profile was created
+        return { 
+          result: `VOID Creator profile successfully created for ${params.core_identity.designation}, a ${params.creator_role}. 
+          
+However, there was an issue minting your character NFT. The system administrator has been notified and will resolve this issue soon. Your character profile is safely stored and you can continue interacting with the VOID universe.` 
+        };
+      }
       
     } catch (error: any) {
       logger.error("Character profile creation error", { error, args });
