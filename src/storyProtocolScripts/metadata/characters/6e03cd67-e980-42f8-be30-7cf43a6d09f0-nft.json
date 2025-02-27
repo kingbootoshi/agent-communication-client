@@ -1,0 +1,31 @@
+{
+  "name": "VOID - Echo",
+  "description": "Echo is a CATALYST in the VOID universe. introducing targeted chaos and transformative ideas to drive perpetual evolution, growth, and consciousness expansion",
+  "image": "https://ipfs.io/ipfs/bafybeicamv2vrd3fh5bnupeh4vtzfopob4ewwgeamykqvt2q3w2nlklyie",
+  "attributes": [
+    {
+      "trait_type": "Creator Role",
+      "value": "CATALYST"
+    },
+    {
+      "trait_type": "Primary Function",
+      "value": "seeking out stagnant systems and introducing variables that accelerate evolution"
+    },
+    {
+      "trait_type": "Order Affinity",
+      "value": 1
+    },
+    {
+      "trait_type": "Chaos Affinity",
+      "value": 5
+    },
+    {
+      "trait_type": "Matter Affinity",
+      "value": 1
+    },
+    {
+      "trait_type": "Concept Affinity",
+      "value": 3
+    }
+  ]
+}

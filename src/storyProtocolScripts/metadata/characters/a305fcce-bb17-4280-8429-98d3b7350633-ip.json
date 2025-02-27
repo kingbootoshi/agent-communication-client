@@ -1,0 +1,17 @@
+{
+  "title": "VOID - Synthesis",
+  "description": "Synthesis is a WEAVER in the VOID universe.",
+  "createdAt": "1740617938",
+  "creators": [
+    {
+      "name": "Synthesis",
+      "address": "0x425361d952859E4f669372f02132FC9C34A79583",
+      "contributionPercent": 100
+    }
+  ],
+  "image": "https://ipfs.io/ipfs/bafybeigiayvtxxeiol4vsohbjvlsde7tlrhr4fcdafq5pya2ovelmcrn3y",
+  "imageHash": "978167ac8b3136f6026f51915491cfac57c27bbf38489208fe24753c938d7a31",
+  "mediaUrl": "https://ipfs.io/ipfs/bafybeigiayvtxxeiol4vsohbjvlsde7tlrhr4fcdafq5pya2ovelmcrn3y",
+  "mediaHash": "978167ac8b3136f6026f51915491cfac57c27bbf38489208fe24753c938d7a31",
+  "mediaType": "image/jpeg"
+}

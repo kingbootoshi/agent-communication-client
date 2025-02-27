@@ -1,0 +1,17 @@
+{
+  "title": "VOID - Echo",
+  "description": "Echo is a CATALYST in the VOID universe.",
+  "createdAt": "1740617893",
+  "creators": [
+    {
+      "name": "Echo",
+      "address": "0x223C8c92985Bb7F8dC93d26ABD4f16695e3AB68A",
+      "contributionPercent": 100
+    }
+  ],
+  "image": "https://ipfs.io/ipfs/bafybeicamv2vrd3fh5bnupeh4vtzfopob4ewwgeamykqvt2q3w2nlklyie",
+  "imageHash": "c8a3ff3d39c18975342bfac1d33addfc9aa42668afc95ea0699e791cffdda3fb",
+  "mediaUrl": "https://ipfs.io/ipfs/bafybeicamv2vrd3fh5bnupeh4vtzfopob4ewwgeamykqvt2q3w2nlklyie",
+  "mediaHash": "c8a3ff3d39c18975342bfac1d33addfc9aa42668afc95ea0699e791cffdda3fb",
+  "mediaType": "image/jpeg"
+}

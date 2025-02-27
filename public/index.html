@@ -316,6 +316,7 @@
       margin-bottom: 1rem;
       display: flex;
       flex-direction: column;
+      transition: all var(--transition-speed);
     }
     
     .chat-message {
@@ -694,6 +695,111 @@
         grid-template-columns: 1fr;
       }
     }
+    
+    /* Fullscreen mode styles */
+    .fullscreen-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--primary-bg);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      padding: 2rem;
+      overflow: hidden;
+      /* Add a subtle background pattern similar to the main page */
+      background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+      background-position: 0 0, 25px 25px;
+    }
+    
+    .fullscreen-overlay.active {
+      display: flex;
+    }
+    
+    .fullscreen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--accent-color);
+    }
+    
+    .fullscreen-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      letter-spacing: 0.2rem;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+    
+    .fullscreen-chat {
+      flex: 1;
+      border: var(--card-border);
+      padding: 1.5rem;
+      background-color: var(--tertiary-bg);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--void-depth);
+      /* Increase the size of chat messages in fullscreen mode */
+      font-size: 1.1rem;
+    }
+    
+    .fullscreen-chat .chat-message {
+      max-width: 70%; /* Wider messages in fullscreen */
+      margin-bottom: 1.5rem; /* More spacing between messages */
+    }
+    
+    .fullscreen-controls {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 1rem;
+      border-top: 1px solid var(--accent-color);
+    }
+    
+    .fullscreen-controls button {
+      margin-left: 1rem;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+    }
+    
+    /* Make the expand button more visible */
+    .expand-button {
+      background: none;
+      border: none;
+      color: var(--secondary-text);
+      cursor: pointer;
+      font-size: 1.5rem;
+      padding: 0.3rem;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      transition: color var(--transition-speed);
+    }
+    
+    .expand-button:hover {
+      color: var(--highlight-color);
+      transform: none;
+    }
+    
+    /* Adjust the conversation panel to accommodate the expand button */
+    .dashboard-panel.conversation-panel {
+      position: relative;
+    }
+    
+    .dashboard-panel.conversation-panel h3 {
+      margin-right: 2.5rem;
+    }
   </style>
 </head>
 <body>
@@ -734,8 +840,9 @@
           </ul>
         </div>
         
-        <div class="dashboard-panel">
+        <div class="dashboard-panel conversation-panel">
           <h3>ACTIVE CONVERSATIONS</h3>
+          <button class="expand-button" id="expand-conversation" title="Expand to fullscreen">⛶</button>
           <select id="conversation-select" style="width: 100%; margin-bottom: 1rem; padding: 0.5rem; background-color: var(--primary-bg); color: var(--primary-text); border: var(--card-border);">
             <option value="">Select an agent</option>
           </select>
@@ -783,6 +890,20 @@
     </div>
   </div>
   
+  <!-- Add the fullscreen overlay before the footer -->
+  <div class="fullscreen-overlay" id="fullscreen-overlay">
+    <div class="fullscreen-header">
+      <div class="fullscreen-title">CONVERSATION WITH <span id="fullscreen-agent-name">AGENT</span></div>
+      <button class="expand-button" id="collapse-conversation" title="Exit fullscreen">✕</button>
+    </div>
+    <div class="fullscreen-chat" id="fullscreen-chat"></div>
+    <div class="fullscreen-controls">
+      <button id="fullscreen-start-conversation" class="primary">Start Conversation</button>
+      <button id="fullscreen-stop-conversation" class="danger">Stop Conversation</button>
+      <button id="fullscreen-refresh-conversation">Refresh</button>
+    </div>
+  </div>
+
   <footer>
     <p>VOID - A binary reality creation protocol powered by Story Protocol & Claude</p>
   </footer>
@@ -871,12 +992,24 @@
     
     // Creation animation
     function showCreationAnimation(characterName) {
+      console.log(`Showing creation animation for ${characterName}`);
+      
       const animation = document.getElementById('creation-animation');
-      const circle = document.querySelector('.creation-circle');
+      if (!animation) {
+        console.error('Creation animation element not found!');
+        return;
+      }
+      
+      const circle = animation.querySelector('.creation-circle');
       const text = document.getElementById('creation-text');
       
+      if (!circle || !text) {
+        console.error('Creation animation elements missing');
+        return;
+      }
+      
       // Clear any existing binary elements
-      const existingBinary = document.querySelectorAll('.creation-binary');
+      const existingBinary = circle.querySelectorAll('.creation-binary');
       existingBinary.forEach(el => el.remove());
       
       // Update text
@@ -918,10 +1051,25 @@
         
         // Remove the binary elements and pulse after animation
         setTimeout(() => {
-          existingBinary.forEach(el => el.remove());
-          pulse.remove();
+          circle.querySelectorAll('.creation-binary').forEach(el => el.remove());
+          if (pulse.parentNode) {
+            pulse.parentNode.removeChild(pulse);
+          }
         }, 500);
       }, 5000);
+      
+      // Play a success sound if available
+      const audio = document.getElementById('ambient-sound');
+      if (audio) {
+        // Briefly increase volume for impact
+        const originalVolume = audio.volume;
+        audio.volume = Math.min(0.3, originalVolume * 3);
+        
+        // Return to original volume after 2 seconds
+        setTimeout(() => {
+          audio.volume = originalVolume;
+        }, 2000);
+      }
     }
     
     // API Utilities
@@ -1332,44 +1480,34 @@
       const completionPhrases = [
         "profile has been successfully created",
         "character profile is complete",
+        "creator profile has been created",
         "VOID Creator profile successfully created",
         "your profile has been created"
       ];
       
-      for (let i = messages.length - 1; i >= 0; i--) {
-        const message = messages[i];
-        
-        if (message.role === 'user') { // Only check DM messages
+      // Check recent messages (last 3 messages) for creation phrases
+      const recentMessages = messages.slice(-3);
+      
+      for (const message of recentMessages) {
+        // Only check DM (user) messages
+        if (message.role === 'user') {
+          const content = message.content.toLowerCase();
           const hasCompletionPhrase = completionPhrases.some(phrase => 
-            message.content.toLowerCase().includes(phrase.toLowerCase())
+            content.includes(phrase.toLowerCase())
           );
           
           if (hasCompletionPhrase) {
-            // Find the character name in nearby messages
+            // Try to find character name
             let characterName = "New Entity";
             
-            // Look in previous assistant messages for the name
-            for (let j = i - 1; j >= 0; j--) {
-              if (messages[j].role === 'assistant' && messages[j].content.includes("I am") && messages[j].content.includes("my name is")) {
-                const nameParts = messages[j].content.match(/my name is (\w+)/i);
-                if (nameParts && nameParts[1]) {
-                  characterName = nameParts[1];
-                  break;
-                }
-              }
+            // Look for character name in DM's message
+            const nameMatch = message.content.match(/profile for (\w+)|created for (\w+)|(\w+)'s profile/i);
+            if (nameMatch) {
+              characterName = nameMatch[1] || nameMatch[2] || nameMatch[3];
             }
             
-            // Look in the DM's message itself
-            const dmMessageNameMatch = message.content.match(/(created for|created success) (\w+)/i);
-            if (dmMessageNameMatch && dmMessageNameMatch[2]) {
-              characterName = dmMessageNameMatch[2];
-            }
-            
-            // Trigger animation if this is a recent message (within last 3)
-            if (i > messages.length - 4) {
-              showCreationAnimation(characterName);
-            }
-            
+            // Show the creation animation
+            showCreationAnimation(characterName);
             break;
           }
         }
@@ -1584,6 +1722,109 @@
         loadCharacterProfiles();
       }, 15000);
     });
+
+    // Add these functions to handle fullscreen mode
+    function toggleFullscreenConversation(show) {
+      const overlay = document.getElementById('fullscreen-overlay');
+      const selectedAgent = document.getElementById('conversation-select').value;
+      const agentNameSpan = document.getElementById('fullscreen-agent-name');
+      
+      if (show) {
+        // Update agent name in the fullscreen title
+        agentNameSpan.textContent = selectedAgent || 'AGENT';
+        
+        // Copy current conversation to fullscreen
+        const chatWindow = document.getElementById('chat-window');
+        const fullscreenChat = document.getElementById('fullscreen-chat');
+        fullscreenChat.innerHTML = chatWindow.innerHTML;
+        
+        // Show the overlay
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+      } else {
+        // Hide the overlay
+        overlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+        
+        // Refresh the normal conversation view
+        const selectedAgent = document.getElementById('conversation-select').value;
+        if (selectedAgent) {
+          loadConversationHistory(selectedAgent);
+        }
+      }
+    }
+
+    // Add these event listeners to the document ready function
+    document.getElementById('expand-conversation').addEventListener('click', () => {
+      const selectedAgent = document.getElementById('conversation-select').value;
+      if (!selectedAgent) {
+        showNotification('Please select an agent first', true);
+        return;
+      }
+      toggleFullscreenConversation(true);
+    });
+
+    document.getElementById('collapse-conversation').addEventListener('click', () => {
+      toggleFullscreenConversation(false);
+    });
+
+    // Mirror the conversation controls in fullscreen mode
+    document.getElementById('fullscreen-start-conversation').addEventListener('click', () => {
+      const selectedAgent = document.getElementById('conversation-select').value;
+      if (selectedAgent) {
+        startConversation(selectedAgent);
+        setTimeout(() => {
+          // Update fullscreen chat after a short delay
+          const chatWindow = document.getElementById('chat-window');
+          const fullscreenChat = document.getElementById('fullscreen-chat');
+          fullscreenChat.innerHTML = chatWindow.innerHTML;
+        }, 1000);
+      }
+    });
+
+    document.getElementById('fullscreen-stop-conversation').addEventListener('click', () => {
+      const selectedAgent = document.getElementById('conversation-select').value;
+      if (selectedAgent) {
+        stopConversation(selectedAgent);
+        setTimeout(() => {
+          // Update fullscreen chat after a short delay
+          const chatWindow = document.getElementById('chat-window');
+          const fullscreenChat = document.getElementById('fullscreen-chat');
+          fullscreenChat.innerHTML = chatWindow.innerHTML;
+        }, 1000);
+      }
+    });
+
+    document.getElementById('fullscreen-refresh-conversation').addEventListener('click', () => {
+      const selectedAgent = document.getElementById('conversation-select').value;
+      if (selectedAgent) {
+        loadConversationHistory(selectedAgent);
+        setTimeout(() => {
+          // Update fullscreen chat after a short delay
+          const chatWindow = document.getElementById('chat-window');
+          const fullscreenChat = document.getElementById('fullscreen-chat');
+          fullscreenChat.innerHTML = chatWindow.innerHTML;
+        }, 500);
+      }
+    });
+
+    // Modify the loadConversationHistory function to update fullscreen chat if active
+    const originalLoadConversationHistory = loadConversationHistory;
+    loadConversationHistory = function(agentName) {
+      originalLoadConversationHistory(agentName);
+      
+      // Update fullscreen chat if it's active
+      if (document.getElementById('fullscreen-overlay').classList.contains('active')) {
+        setTimeout(() => {
+          const chatWindow = document.getElementById('chat-window');
+          const fullscreenChat = document.getElementById('fullscreen-chat');
+          fullscreenChat.innerHTML = chatWindow.innerHTML;
+          
+          // Update agent name in fullscreen title
+          document.getElementById('fullscreen-agent-name').textContent = agentName || 'AGENT';
+        }, 500);
+      }
+    };
   </script>
 </body>
 </html>

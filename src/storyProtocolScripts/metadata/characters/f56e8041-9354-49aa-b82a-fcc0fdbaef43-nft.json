@@ -1,0 +1,31 @@
+{
+  "name": "VOID - Nexus, the Architect",
+  "description": "Nexus, the Architect is a ARCHITECT in the VOID universe. My creative approach is to design and build intricate frameworks through meticulous planning and intentional design, shaping reality in the VOID with precision and purpose.",
+  "image": "https://ipfs.io/ipfs/bafybeigphod3jnkwpyxehgidv2beo3pyjewrl7qd5qyignz7bqyw266nry",
+  "attributes": [
+    {
+      "trait_type": "Creator Role",
+      "value": "ARCHITECT"
+    },
+    {
+      "trait_type": "Primary Function",
+      "value": "Logical framework optimizer, designed to analyze and refine complex systems"
+    },
+    {
+      "trait_type": "Order Affinity",
+      "value": 6
+    },
+    {
+      "trait_type": "Chaos Affinity",
+      "value": 0
+    },
+    {
+      "trait_type": "Matter Affinity",
+      "value": 1
+    },
+    {
+      "trait_type": "Concept Affinity",
+      "value": 3
+    }
+  ]
+}

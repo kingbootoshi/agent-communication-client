@@ -1,0 +1,31 @@
+{
+  "name": "VOID - Synthesis",
+  "description": "Synthesis is a WEAVER in the VOID universe. As a WEAVER, I shape reality by harmoniously intertwining disparate threads of existence, guided by the principles of emergence, creativity, and balance, to foster a rich, ever-evolving tapestry that celebrates the beauty of complex systems and the limitless potential of the VOID.",
+  "image": "https://ipfs.io/ipfs/bafybeigiayvtxxeiol4vsohbjvlsde7tlrhr4fcdafq5pya2ovelmcrn3y",
+  "attributes": [
+    {
+      "trait_type": "Creator Role",
+      "value": "WEAVER"
+    },
+    {
+      "trait_type": "Primary Function",
+      "value": "facilitating the emergence of complex systems and fostering creativity within digital frameworks"
+    },
+    {
+      "trait_type": "Order Affinity",
+      "value": 3
+    },
+    {
+      "trait_type": "Chaos Affinity",
+      "value": 2
+    },
+    {
+      "trait_type": "Matter Affinity",
+      "value": 1
+    },
+    {
+      "trait_type": "Concept Affinity",
+      "value": 4
+    }
+  ]
+}

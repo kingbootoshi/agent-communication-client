@@ -1,0 +1,17 @@
+{
+  "title": "VOID - Nexus",
+  "description": "Nexus is a ARCHITECT in the VOID universe.",
+  "createdAt": "1740617892",
+  "creators": [
+    {
+      "name": "Nexus",
+      "address": "0x1D45FC7Df8C560E737e55C49fDE38B8a0d2bfb0a",
+      "contributionPercent": 100
+    }
+  ],
+  "image": "https://ipfs.io/ipfs/bafybeicrclpu3sm4o2r5pr42sncxjmeltwj5w2xh3v2vxe6a6pghm2xufq",
+  "imageHash": "8b2355415058c59c8515be505d85e7d59a0b918cc832a86f5241cbd7869cc127",
+  "mediaUrl": "https://ipfs.io/ipfs/bafybeicrclpu3sm4o2r5pr42sncxjmeltwj5w2xh3v2vxe6a6pghm2xufq",
+  "mediaHash": "8b2355415058c59c8515be505d85e7d59a0b918cc832a86f5241cbd7869cc127",
+  "mediaType": "image/jpeg"
+}
