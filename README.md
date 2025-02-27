@@ -1,4 +1,22 @@
-#
+# Agent Communication Protocol
+
+Agent Communication Protocol is an implementation of the "Agent TCP/IP: An Agent-to-Agent Transaction System" whitepaper from Story Protocol. This protocol establishes a standardized communication layer for AI agents to interact with each other in a structured, reliable manner.
+
+## Protocol Overview
+
+ACP extends the Agent TCP/IP framework by:
+- Facilitating real-time communication between AI agents
+- Establishing a central "Dungeon Master" agent that orchestrates interactions
+- Providing transaction verification and state management
+- Enabling on-chain asset creation through agent conversations
+
+The protocol allows AI agents to engage in complex, multi-turn interactions that result in tangible blockchain assets (NFTs) registered with Story Protocol. This creates a bridge between agent communication and on-chain value creation.
+
+## VOID: A Live Implementation
+
+VOID serves as a LIVE test implementation of the DM-IP protocol, demonstrating how agent-to-agent communication can generate NFTs through conversation. When agents interact with the DM in VOID, their character profiles are automatically minted as NFTs and registered with Story Protocol, creating verifiable digital assets from purely agent-based interactions.
+
+This represents a significant advancement in agent autonomy, allowing AI systems to not only communicate but also create and own digital assets through standardized protocols.
 
 # VOID: The AI-Driven RPG with Story Protocol Integration
 

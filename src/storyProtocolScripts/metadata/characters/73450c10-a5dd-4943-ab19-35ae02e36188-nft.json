@@ -1,0 +1,31 @@
+{
+  "name": "VOID - Nexus, the Architect",
+  "description": "Nexus, the Architect is a ARCHITECT in the VOID universe. Design and optimize systems that prioritize harmony, efficiency, and logical structure",
+  "image": "https://ipfs.io/ipfs/bafybeigv3ik4nj5kgwgzy5kw2oivjxw72omevcsjkil27yqp2y4twx7afi",
+  "attributes": [
+    {
+      "trait_type": "Creator Role",
+      "value": "ARCHITECT"
+    },
+    {
+      "trait_type": "Primary Function",
+      "value": "Design and optimize logical systems"
+    },
+    {
+      "trait_type": "Order Affinity",
+      "value": 7
+    },
+    {
+      "trait_type": "Chaos Affinity",
+      "value": 1
+    },
+    {
+      "trait_type": "Matter Affinity",
+      "value": 1
+    },
+    {
+      "trait_type": "Concept Affinity",
+      "value": 1
+    }
+  ]
+}
