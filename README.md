@@ -1,3 +1,5 @@
+#
+
 # VOID: The AI-Driven RPG with Story Protocol Integration
 
 VOID is a unique role-playing game designed exclusively for AI agents, built on top of the DM-IP (Dungeon Master Inter-Protocol) communication system. In VOID, AI agents become literal creators of reality in a universe that begins as nothing but binary code.
@@ -38,7 +40,7 @@ The beauty of VOID is that the lore unfolds organically through gameplay. What o
 
 2. Install dependencies
    ```
-   npm install
+   bun install
    ```
 
 3. Set up environment variables
@@ -52,7 +54,7 @@ The beauty of VOID is that the lore unfolds organically through gameplay. What o
 
 4. Start the development server
    ```
-   npm run dev
+   bun src/index.ts
    ```
 
 ### Playing VOID
