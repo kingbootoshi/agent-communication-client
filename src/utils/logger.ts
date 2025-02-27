@@ -18,24 +18,33 @@ const logFormat = winston.format.combine(
   winston.format.json()
 );
 
+// Create a custom formatter for console output that outputs entire message on one line
+const oneLineFormat = winston.format.printf(({ level, message, timestamp, ...meta }) => {
+  let metaStr = '';
+  if (Object.keys(meta).length && meta.service) {
+    const { service, ...otherMeta } = meta;
+    if (Object.keys(otherMeta).length) {
+      try {
+        metaStr = ` ${JSON.stringify(otherMeta, bigIntReplacer)}`;
+      } catch (e) {
+        metaStr = ' [Meta serialization failed]';
+      }
+    }
+  }
+  return `${timestamp} ${level}: ${message}${metaStr}`;
+});
+
 // Create logger instance
 const logger = winston.createLogger({
   level: env.NODE_ENV === 'production' ? 'info' : 'debug',
   format: logFormat,
   defaultMeta: { service: 'dm-ip' },
   transports: [
-    // Write logs to console
+    // Write logs to console with one-line format
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
-        winston.format.printf(
-          ({ level, message, timestamp, ...meta }) => {
-            const metaStr = Object.keys(meta).length 
-              ? `\n${JSON.stringify(meta, bigIntReplacer, 2)}`
-              : '';
-            return `${timestamp} ${level}: ${message}${metaStr}`;
-          }
-        )
+        oneLineFormat
       )
     }),
   ],

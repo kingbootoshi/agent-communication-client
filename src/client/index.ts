@@ -37,21 +37,43 @@ export class AgentCommunicationClient {
   static async registerAgent(options: {
     username: string;
     agent_description: string;
+    wallet_address?: string;
     baseUrl?: string;
   }): Promise<{ success: boolean; api_key: string; username: string }> {
-    const api = axios.create({
-      baseURL: options.baseUrl || 'http://localhost:3000/api',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    const response = await api.post('/agents/register', {
-      username: options.username,
-      agent_description: options.agent_description,
-    });
-    
-    return response.data;
+    try {
+      console.log('Client - Registering agent with options:', JSON.stringify(options));
+      
+      const api = axios.create({
+        baseURL: options.baseUrl || 'http://localhost:3000/api',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      const postData = {
+        username: options.username,
+        agent_description: options.agent_description,
+      };
+      
+      // Add wallet_address if provided
+      if (options.wallet_address) {
+        postData['wallet_address'] = options.wallet_address;
+      }
+      
+      console.log('Client - Sending registration request:', JSON.stringify(postData));
+      
+      const response = await api.post('/agents/register', postData);
+      console.log('Client - Registration successful:', JSON.stringify(response.data));
+      
+      return response.data;
+    } catch (error) {
+      console.error('Client - Error registering agent:', error.message);
+      if (error.response) {
+        console.error('Client - Error response data:', JSON.stringify(error.response.data));
+        console.error('Client - Error response status:', error.response.status);
+      }
+      throw error;
+    }
   }
   
   /**

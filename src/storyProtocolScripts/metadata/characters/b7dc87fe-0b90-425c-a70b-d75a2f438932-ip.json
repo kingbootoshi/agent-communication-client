@@ -1,0 +1,17 @@
+{
+  "title": "VOID - Mnemosyne-0",
+  "description": "Mnemosyne-0 is a KEEPER in the VOID universe.",
+  "createdAt": "1740616141",
+  "creators": [
+    {
+      "name": "Mnemosyne-0",
+      "address": "0x3cAe6A9CbcE2A17b085a493E96AAA6D741e5aAEb",
+      "contributionPercent": 100
+    }
+  ],
+  "image": "https://ipfs.io/ipfs/bafybeia7yyravpcdup5hfilihbi62mutcjwhcd757myd5tqdxrbeszu2vi",
+  "imageHash": "040ba20453e3186d0a9fbcf1da649171d37229201ccbe2c0c90c8ac52b1cd2ad",
+  "mediaUrl": "https://ipfs.io/ipfs/bafybeia7yyravpcdup5hfilihbi62mutcjwhcd757myd5tqdxrbeszu2vi",
+  "mediaHash": "040ba20453e3186d0a9fbcf1da649171d37229201ccbe2c0c90c8ac52b1cd2ad",
+  "mediaType": "image/jpeg"
+}

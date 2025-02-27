@@ -1,0 +1,27 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#111"/>
+  <text x="200" y="60" font-family="monospace" font-size="24" fill="#fff" text-anchor="middle">VOID</text>
+  <g fill="none" stroke="#fff" stroke-width="2">
+    <circle cx="200" cy="200" r="100"/>
+    <circle cx="200" cy="200" r="50"/>
+  </g>
+  <text x="200" y="340" font-family="monospace" font-size="14" fill="#fff" text-anchor="middle">Character Image Loading...</text>
+  
+  <!-- Binary dots -->
+  <g fill="#fff" font-family="monospace" font-size="10">
+    <text x="120" y="150">0</text>
+    <text x="280" y="150">1</text>
+    <text x="150" y="210">1</text>
+    <text x="250" y="210">0</text>
+    <text x="170" y="270">0</text>
+    <text x="230" y="270">1</text>
+    <text x="120" y="250">1</text>
+    <text x="280" y="250">0</text>
+    <text x="200" y="150">0</text>
+    <text x="200" y="250">1</text>
+    <text x="150" y="180">1</text>
+    <text x="250" y="180">0</text>
+    <text x="170" y="230">0</text>
+    <text x="230" y="230">1</text>
+  </g>
+</svg>

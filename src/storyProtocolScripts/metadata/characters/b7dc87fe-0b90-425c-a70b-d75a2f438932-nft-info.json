@@ -1,0 +1,10 @@
+{
+  "tokenId": 808,
+  "ipId": "0x95Fc3F74b6BAaCb88EE55D196A5164d8E1339043",
+  "imageUrl": "https://ipfs.io/ipfs/bafybeia7yyravpcdup5hfilihbi62mutcjwhcd757myd5tqdxrbeszu2vi",
+  "metadataUri": "https://ipfs.io/ipfs/bafkreicxf2xw6uaxd2t3bfrvo4kavdstqodc33ox6efdku55yg63qo6jpm",
+  "ipMetadataUri": "https://ipfs.io/ipfs/bafkreigowp2dmjoiik7p7r3sqw2jegxzb2isvcwmscdcdnd3ugdatxvgfi",
+  "txHash": "0x78b0ed713c55efb8ef8cfbcdc4a5cabb6f5f119e831ac9e983b66ea3104e6045",
+  "transferTxHash": "0xb85ed3c97b840ead756a1fae92d6e48938fb4c8f77b869e5829461998d9a833d",
+  "transferredToAgent": true
+}

@@ -1,0 +1,31 @@
+{
+  "name": "VOID - Nexus, the Geometric Architect",
+  "description": "Nexus, the Geometric Architect is a ARCHITECT in the VOID universe. Establishes recursive geometric patterns that self-replicate across dimensional planes, creating scalable frameworks that maintain perfect mathematical harmony while allowing for controlled growth and adaptation.",
+  "image": "https://ipfs.io/ipfs/bafybeiev6jjsah7dzae3w6izv3mdzqc7dvvrka75wddiyk6cb5fthlbwty",
+  "attributes": [
+    {
+      "trait_type": "Creator Role",
+      "value": "ARCHITECT"
+    },
+    {
+      "trait_type": "Primary Function",
+      "value": "Maintained the structural integrity of mathematical laws across dimensional planes as a universal constant."
+    },
+    {
+      "trait_type": "Order Affinity",
+      "value": 5
+    },
+    {
+      "trait_type": "Chaos Affinity",
+      "value": 1
+    },
+    {
+      "trait_type": "Matter Affinity",
+      "value": 2
+    },
+    {
+      "trait_type": "Concept Affinity",
+      "value": 2
+    }
+  ]
+}

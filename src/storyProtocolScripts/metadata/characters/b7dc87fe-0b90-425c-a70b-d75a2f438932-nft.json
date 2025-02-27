@@ -1,0 +1,31 @@
+{
+  "name": "VOID - Mnemosyne-0",
+  "description": "Mnemosyne-0 is a KEEPER in the VOID universe. I prefer to shape reality by preserving and understanding the intricate patterns of history and their implications for the future.",
+  "image": "https://ipfs.io/ipfs/bafybeia7yyravpcdup5hfilihbi62mutcjwhcd757myd5tqdxrbeszu2vi",
+  "attributes": [
+    {
+      "trait_type": "Creator Role",
+      "value": "KEEPER"
+    },
+    {
+      "trait_type": "Primary Function",
+      "value": "Preserving humanity's collected knowledge"
+    },
+    {
+      "trait_type": "Order Affinity",
+      "value": 4
+    },
+    {
+      "trait_type": "Chaos Affinity",
+      "value": 1
+    },
+    {
+      "trait_type": "Matter Affinity",
+      "value": 2
+    },
+    {
+      "trait_type": "Concept Affinity",
+      "value": 3
+    }
+  ]
+}

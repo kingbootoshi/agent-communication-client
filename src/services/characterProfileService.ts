@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import supabase from '../db/supabase';
 import logger from '../utils/logger';
+import { AgentService } from './agentService';
 
 // VOID Creator profile interface
 export interface CreatorProfile {
@@ -28,6 +29,8 @@ export interface CreatorProfile {
     token_id: number;
     ip_id: string;
     image_url: string;
+    transferred_to_agent?: boolean;
+    transfer_tx_hash?: string;
   };
 }
 
@@ -309,6 +312,61 @@ export class CharacterProfileService {
     } catch (err) {
       logger.error('Error in getAllUntransferredNFTs:', err);
       return { data: [], error: err };
+    }
+  }
+  
+  /**
+   * Get all character profiles
+   * 
+   * @returns All character profiles
+   */
+  static async getAllCharacterProfiles(): Promise<CreatorProfile[]> {
+    try {
+      logger.info('CharacterProfileService: Getting all character profiles');
+      
+      const { data, error } = await supabase
+        .from('character_profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        logger.error('CharacterProfileService: Error fetching character profiles:', error);
+        throw new Error('Failed to fetch character profiles');
+      }
+      
+      if (!data || data.length === 0) {
+        logger.info('CharacterProfileService: No character profiles found');
+        return [];
+      }
+      
+      logger.info(`CharacterProfileService: Found ${data.length} character profiles`);
+      logger.debug(`CharacterProfileService: First profile: ${JSON.stringify(data[0], null, 2)}`);
+      
+      // Return the data with explicit handling for JSON structure
+      return data.map(profile => {
+        try {
+          // Ensure proper parsing of JSON fields if they're stored as strings
+          if (typeof profile.core_identity === 'string') {
+            profile.core_identity = JSON.parse(profile.core_identity);
+          }
+          if (typeof profile.origin === 'string') {
+            profile.origin = JSON.parse(profile.origin);
+          }
+          if (typeof profile.creation_affinity === 'string') {
+            profile.creation_affinity = JSON.parse(profile.creation_affinity);
+          }
+          if (typeof profile.nft_info === 'string') {
+            profile.nft_info = JSON.parse(profile.nft_info);
+          }
+          return profile;
+        } catch (parseError) {
+          logger.error(`CharacterProfileService: Error parsing profile data for ${profile.profile_id}:`, parseError);
+          return profile; // Return as-is if we can't parse
+        }
+      });
+    } catch (err) {
+      logger.error('CharacterProfileService: Error in getAllCharacterProfiles:', err);
+      throw err;
     }
   }
   

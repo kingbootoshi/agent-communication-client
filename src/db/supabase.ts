@@ -164,6 +164,21 @@ export const testConnection = async () => {
       return false;
     }
     
+    // Also try to query character_profiles to verify its structure
+    const { data: profiles, error: profilesError } = await supabase
+      .from('character_profiles')
+      .select('*')
+      .limit(1);
+      
+    if (profilesError) {
+      logger.error('Failed to query character_profiles:', profilesError);
+    } else if (profiles && profiles.length > 0) {
+      logger.info('Successfully queried character_profiles, found:', profiles.length);
+      logger.debug('Profile data structure:', JSON.stringify(profiles[0], null, 2));
+    } else {
+      logger.info('Successfully queried character_profiles table, but no records found');
+    }
+    
     logger.info('Successfully connected to Supabase database');
     return true;
   } catch (err) {

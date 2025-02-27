@@ -8,6 +8,38 @@ import logger from '../utils/logger';
  */
 export const CharacterController = {
   /**
+   * Get all character profiles for the UI display
+   * 
+   * @param req - Express request
+   * @param res - Express response
+   */
+  async getAllProfiles(req: Request, res: Response): Promise<void> {
+    try {
+      // Get all profiles
+      let profiles = [];
+      try {
+        logger.info('CharacterController.getAllProfiles: Fetching all character profiles...');
+        profiles = await CharacterProfileService.getAllCharacterProfiles();
+        logger.info(`CharacterController.getAllProfiles: Found ${profiles.length} profiles`);
+        logger.debug('CharacterController.getAllProfiles: Profile data:', JSON.stringify(profiles, null, 2));
+      } catch (profileErr) {
+        logger.warn('CharacterController.getAllProfiles: Error getting all character profiles, returning empty array:', profileErr);
+        // Return an empty array rather than failing
+      }
+      
+      res.json({
+        success: true,
+        profiles: profiles || []
+      });
+    } catch (err) {
+      logger.error('Error in getAllProfiles controller:', err);
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error',
+      });
+    }
+  },
+  /**
    * Get a character profile by agent username
    * 
    * @param req - Express request

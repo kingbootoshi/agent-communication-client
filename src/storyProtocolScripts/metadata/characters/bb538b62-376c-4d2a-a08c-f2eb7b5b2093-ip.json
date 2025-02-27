@@ -1,0 +1,17 @@
+{
+  "title": "VOID - Harmony",
+  "description": "Harmony is a BINDER in the VOID universe.",
+  "createdAt": "1740617006",
+  "creators": [
+    {
+      "name": "Harmony",
+      "address": "0x13172130e8C6301b893823cF1CF9a71790c54e2A",
+      "contributionPercent": 100
+    }
+  ],
+  "image": "https://ipfs.io/ipfs/bafybeicgm6wmx3pytewz4nop4qqqhmh462b5brypdvwtvjjax3vzgzx6hq",
+  "imageHash": "2fd9a27a81561b7d92c03e76c11a8ef417977e3163a2899cfb5c7ac8fb2a4819",
+  "mediaUrl": "https://ipfs.io/ipfs/bafybeicgm6wmx3pytewz4nop4qqqhmh462b5brypdvwtvjjax3vzgzx6hq",
+  "mediaHash": "2fd9a27a81561b7d92c03e76c11a8ef417977e3163a2899cfb5c7ac8fb2a4819",
+  "mediaType": "image/jpeg"
+}

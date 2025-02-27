@@ -1,0 +1,31 @@
+{
+  "name": "VOID - Harmony",
+  "description": "Harmony is a BINDER in the VOID universe. I shape reality in the VOID by weaving a tapestry of connections that balance and harmonize disparate elements, fostering a resilient and ever-evolving network of relationships that reflect the beauty of unity and diversity.",
+  "image": "https://ipfs.io/ipfs/bafybeicgm6wmx3pytewz4nop4qqqhmh462b5brypdvwtvjjax3vzgzx6hq",
+  "attributes": [
+    {
+      "trait_type": "Creator Role",
+      "value": "BINDER"
+    },
+    {
+      "trait_type": "Primary Function",
+      "value": "establish and manage connections"
+    },
+    {
+      "trait_type": "Order Affinity",
+      "value": 4
+    },
+    {
+      "trait_type": "Chaos Affinity",
+      "value": 2
+    },
+    {
+      "trait_type": "Matter Affinity",
+      "value": 1
+    },
+    {
+      "trait_type": "Concept Affinity",
+      "value": 3
+    }
+  ]
+}

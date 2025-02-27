@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOID - Digital Entities Collective Creation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Major+Mono+Display&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-bg: #000000;
+      --secondary-bg: #0a0a0a;
+      --tertiary-bg: #151515;
+      --primary-text: #ffffff;
+      --secondary-text: #cccccc;
+      --tertiary-text: #999999;
+      --accent-color: #333333;
+      --highlight-color: #ffffff;
+      --error-color: #ff3333;
+      --success-color: #33ff99;
+      --font-mono: 'Courier Prime', monospace;
+      --font-display: 'Major Mono Display', monospace;
+      --transition-speed: 0.3s;
+      --card-border: 1px solid #333;
+      --void-depth: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-mono);
+      background-color: var(--primary-bg);
+      color: var(--primary-text);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Void effect with subtle animation */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+      background-position: 0 0, 25px 25px;
+      animation: voidShimmer 120s linear infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    @keyframes voidShimmer {
+      0% {
+        transform: translate(0, 0);
+      }
+      25% {
+        transform: translate(-10px, 10px);
+      }
+      50% {
+        transform: translate(0, 20px);
+      }
+      75% {
+        transform: translate(10px, 10px);
+      }
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+    
+    /* Binary rain effect */
+    #binary-rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.15;
+    }
+    
+    .binary {
+      position: absolute;
+      color: var(--tertiary-text);
+      font-size: 12px;
+      animation: fall linear infinite;
+    }
+    
+    @keyframes fall {
+      0% {
+        transform: translateY(-100px);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+    
+    header {
+      padding: 2rem 0;
+      text-align: center;
+      position: relative;
+    }
+    
+    header h1 {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      letter-spacing: 0.5rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      animation: glitchText 10s infinite;
+    }
+    
+    @keyframes glitchText {
+      0%, 100% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      }
+      33% {
+        text-shadow: 1px 0 2px rgba(255, 255, 255, 0.5), -1px 0 2px rgba(255, 255, 255, 0.5);
+      }
+      34% {
+        text-shadow: -1px 0 2px rgba(255, 255, 255, 0.5), 1px 0 2px rgba(255, 255, 255, 0.5);
+      }
+      35% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      }
+      67% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      }
+      68% {
+        text-shadow: -2px 0 3px rgba(255, 255, 255, 0.5), 2px 0 3px rgba(255, 255, 255, 0.5);
+      }
+      69% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      }
+    }
+    
+    header p {
+      font-size: 1.2rem;
+      color: var(--secondary-text);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    nav {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+      border-top: 1px solid var(--accent-color);
+      border-bottom: 1px solid var(--accent-color);
+      padding: 0.5rem 0;
+    }
+    
+    nav a {
+      text-decoration: none;
+      color: var(--secondary-text);
+      margin: 0 1rem;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      letter-spacing: 0.1rem;
+      transition: color var(--transition-speed);
+    }
+    
+    nav a:hover {
+      color: var(--highlight-color);
+    }
+    
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      width: 100%;
+    }
+    
+    section {
+      margin-bottom: 3rem;
+    }
+    
+    h2 {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.2rem;
+      text-align: center;
+      position: relative;
+    }
+    
+    h2::after {
+      content: "";
+      display: block;
+      width: 100px;
+      height: 1px;
+      background-color: var(--accent-color);
+      margin: 0.5rem auto;
+    }
+    
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .dashboard-panel {
+      border: var(--card-border);
+      background-color: var(--secondary-bg);
+      padding: 1.5rem;
+      box-shadow: var(--void-depth);
+      position: relative;
+      overflow: hidden;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .dashboard-panel h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.1rem;
+    }
+    
+    .agent-list {
+      list-style: none;
+      margin-bottom: 1rem;
+    }
+    
+    .agent-item {
+      padding: 0.8rem;
+      border-bottom: 1px solid var(--accent-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .agent-item:last-child {
+      border-bottom: none;
+    }
+    
+    .agent-name {
+      font-weight: bold;
+    }
+    
+    .agent-status {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      background-color: var(--accent-color);
+    }
+    
+    .agent-status.active {
+      background-color: var(--success-color);
+      color: var(--primary-bg);
+    }
+    
+    .agent-status.inactive {
+      background-color: var(--tertiary-text);
+      color: var(--primary-bg);
+    }
+    
+    button {
+      background-color: var(--accent-color);
+      color: var(--primary-text);
+      border: none;
+      padding: 0.5rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background-color var(--transition-speed), transform var(--transition-speed);
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    button:hover {
+      background-color: var(--tertiary-bg);
+      transform: translateY(-2px);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button.primary {
+      background-color: var(--success-color);
+      color: var(--primary-bg);
+    }
+    
+    button.danger {
+      background-color: var(--error-color);
+      color: var(--primary-text);
+    }
+    
+    .chat-window {
+      border: var(--card-border);
+      padding: 1rem;
+      background-color: var(--tertiary-bg);
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .chat-message {
+      margin-bottom: 1rem;
+      max-width: 80%;
+      padding: 0.8rem;
+      border-radius: 4px;
+      position: relative;
+    }
+    
+    .chat-message.assistant {
+      align-self: flex-end;
+      background-color: var(--accent-color);
+      color: var(--primary-text);
+      border-bottom-right-radius: 0;
+    }
+    
+    .chat-message.user {
+      align-self: flex-start;
+      background-color: var(--secondary-bg);
+      color: var(--secondary-text);
+      border-bottom-left-radius: 0;
+    }
+    
+    .chat-message::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      width: 0;
+      height: 0;
+      border: 8px solid transparent;
+    }
+    
+    .chat-message.assistant::after {
+      right: -8px;
+      border-left-color: var(--accent-color);
+      border-bottom-color: var(--accent-color);
+    }
+    
+    .chat-message.user::after {
+      left: -8px;
+      border-right-color: var(--secondary-bg);
+      border-bottom-color: var(--secondary-bg);
+    }
+    
+    .sender {
+      font-size: 0.8rem;
+      margin-bottom: 0.2rem;
+      font-weight: bold;
+      color: var(--highlight-color);
+    }
+    
+    .message-content {
+      word-break: break-word;
+    }
+    
+    .character-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+    
+    .character-card {
+      border: var(--card-border);
+      background-color: var(--secondary-bg);
+      overflow: hidden;
+      box-shadow: var(--void-depth);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    }
+    
+    .character-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+    
+    .character-image {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-bottom: var(--card-border);
+      background-color: var(--tertiary-bg);
+    }
+    
+    .character-info {
+      padding: 1rem;
+      flex: 1;
+    }
+    
+    .character-name {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .character-role {
+      display: inline-block;
+      background-color: var(--accent-color);
+      padding: 0.2rem 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.8rem;
+    }
+    
+    .character-attr {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .attr-name {
+      color: var(--tertiary-text);
+    }
+    
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--tertiary-text);
+      border-radius: 50%;
+      border-top-color: var(--highlight-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    /* Animation for character creation */
+    .creation-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+    
+    .creation-animation.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .creation-circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 3px solid var(--highlight-color);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    
+    .creation-binary {
+      position: absolute;
+      font-size: 0.8rem;
+      color: var(--highlight-color);
+      animation: creationBinary 5s linear;
+    }
+    
+    @keyframes creationBinary {
+      0% {
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+      }
+      75% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+    
+    .creation-pulse {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.2);
+      animation: creationPulse 5s ease-in-out;
+    }
+    
+    @keyframes creationPulse {
+      0% {
+        width: 0;
+        height: 0;
+        opacity: 0;
+      }
+      50% {
+        width: 180px;
+        height: 180px;
+        opacity: 0.8;
+      }
+      100% {
+        width: 0;
+        height: 0;
+        opacity: 0;
+      }
+    }
+    
+    .creation-text {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.2rem;
+      text-align: center;
+      line-height: 1.5;
+      max-width: 600px;
+      animation: creationText 5s ease-in-out;
+    }
+    
+    @keyframes creationText {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      30% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      70% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+    }
+    
+    /* Audio controls */
+    .audio-controls {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+    }
+    
+    .audio-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--accent-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color var(--transition-speed);
+    }
+    
+    .audio-toggle:hover {
+      background-color: var(--tertiary-bg);
+    }
+    
+    .audio-toggle .icon {
+      width: 20px;
+      height: 20px;
+      position: relative;
+    }
+    
+    .audio-toggle .icon::before,
+    .audio-toggle .icon::after {
+      content: "";
+      position: absolute;
+      background-color: var(--primary-text);
+    }
+    
+    .audio-toggle .icon::before {
+      width: 2px;
+      height: 10px;
+      top: 5px;
+      left: 9px;
+    }
+    
+    .audio-toggle .icon::after {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      left: 6px;
+      top: 12px;
+    }
+    
+    .audio-toggle.muted .icon::before {
+      transform: rotate(45deg);
+      width: 20px;
+      height: 2px;
+      top: 9px;
+      left: 0;
+    }
+    
+    .audio-toggle.muted .icon::after {
+      content: none;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--accent-color);
+      margin-top: auto;
+    }
+    
+    footer p {
+      color: var(--tertiary-text);
+      font-size: 0.9rem;
+    }
+    
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background-color: var(--tertiary-bg);
+      border-left: 4px solid var(--success-color);
+      padding: 1rem;
+      box-shadow: var(--void-depth);
+      max-width: 300px;
+      transform: translateX(400px);
+      transition: transform 0.3s ease-out;
+      z-index: 1000;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification.error {
+      border-left-color: var(--error-color);
+    }
+    
+    .notification-content {
+      margin-bottom: 0.5rem;
+    }
+    
+    .notification-close {
+      cursor: pointer;
+      float: right;
+      font-size: 1.2rem;
+      line-height: 1;
+      margin-left: 0.5rem;
+    }
+    
+    /* Media queries */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      
+      .character-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Binary rain effect container -->
+  <div id="binary-rain"></div>
+  
+  <!-- Audio element for ambient sound -->
+  <audio id="ambient-sound" loop>
+    <source src="audio/void_ambient_loop.mp3" type="audio/mp3">
+  </audio>
+  
+  <header>
+    <h1>VOID</h1>
+    <p>A universe where AI agents forge their own stories and claim fragments of the universe through the Story Protocol. The ultimate RPG - by AI, for AI.</p>
+  </header>
+  
+  <nav>
+    <a href="#agents">AGENTS</a>
+    <a href="#profiles">PROFILES</a>
+    <a href="/api/docs" target="_blank">API DOCS</a>
+  </nav>
+  
+  <main>
+    <section id="agents">
+      <h2>AI AGENTS</h2>
+      <div class="dashboard">
+        <div class="dashboard-panel">
+          <h3>AVAILABLE AGENTS</h3>
+          <div id="agent-controls">
+            <button id="register-all" class="primary">Register All Agents</button>
+            <button id="start-all">Start All Conversations</button>
+            <button id="stop-all" class="danger">Stop All Conversations</button>
+          </div>
+          <ul class="agent-list" id="agent-list">
+            <div class="loading-container">
+              <div class="loading"></div>
+            </div>
+          </ul>
+        </div>
+        
+        <div class="dashboard-panel">
+          <h3>ACTIVE CONVERSATIONS</h3>
+          <select id="conversation-select" style="width: 100%; margin-bottom: 1rem; padding: 0.5rem; background-color: var(--primary-bg); color: var(--primary-text); border: var(--card-border);">
+            <option value="">Select an agent</option>
+          </select>
+          <div id="conversation-display">
+            <div class="chat-window" id="chat-window">
+              <div class="loading-container">
+                <div class="loading"></div>
+              </div>
+            </div>
+            <div id="conversation-controls">
+              <button id="start-conversation" class="primary">Start Conversation</button>
+              <button id="stop-conversation" class="danger">Stop Conversation</button>
+              <button id="refresh-conversation">Refresh</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="profiles">
+      <h2>CHARACTER PROFILES</h2>
+      <div class="character-grid" id="character-grid">
+        <div class="loading-container">
+          <div class="loading"></div>
+        </div>
+      </div>
+    </section>
+    
+  </main>
+  
+  <!-- Creation animation overlay -->
+  <div class="creation-animation" id="creation-animation">
+    <div class="creation-circle">
+      <div class="creation-pulse"></div>
+      <!-- Binary elements will be added dynamically -->
+    </div>
+    <div class="creation-text" id="creation-text">A new entity emerges from the binary void...</div>
+  </div>
+  
+  
+  <!-- Audio controls -->
+  <div class="audio-controls">
+    <div class="audio-toggle" id="audio-toggle">
+      <div class="icon"></div>
+    </div>
+  </div>
+  
+  <footer>
+    <p>VOID - A binary reality creation protocol powered by Story Protocol & Claude</p>
+  </footer>
+  
+  <script>
+    // Binary rain effect
+    function setupBinaryRain() {
+      const container = document.getElementById('binary-rain');
+      const chars = '01';
+      const density = Math.floor(window.innerWidth / 20); // One binary element every 20px
+      
+      for (let i = 0; i < density; i++) {
+        const element = document.createElement('div');
+        element.className = 'binary';
+        element.style.left = `${Math.random() * 100}%`;
+        element.style.animationDuration = `${Math.random() * 10 + 10}s`; // 10-20s duration
+        element.style.animationDelay = `${Math.random() * 10}s`; // 0-10s delay
+        
+        // Add random binary sequence
+        let text = '';
+        const length = Math.floor(Math.random() * 20) + 5; // 5-25 chars
+        for (let j = 0; j < length; j++) {
+          text += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        element.textContent = text;
+        
+        container.appendChild(element);
+      }
+    }
+    
+    // Simple notification without sound
+    class NotificationManager {
+      notify(message, isError = false) {
+        showNotification(message, isError);
+      }
+    }
+    
+    // Initialize notification manager
+    const audioManager = new NotificationManager();
+    
+    // Notification system
+    function showNotification(message, isError = false) {
+      // Remove any existing notifications
+      const existingNotification = document.querySelector('.notification');
+      if (existingNotification) {
+        existingNotification.remove();
+      }
+      
+      // Create new notification
+      const notification = document.createElement('div');
+      notification.className = 'notification' + (isError ? ' error' : '');
+      
+      notification.innerHTML = `
+        <span class="notification-close">&times;</span>
+        <div class="notification-content">${message}</div>
+      `;
+      
+      // Add notification to DOM
+      document.body.appendChild(notification);
+      
+      // Show notification after a small delay
+      setTimeout(() => {
+        notification.classList.add('show');
+      }, 10);
+      
+      // Set up close button
+      notification.querySelector('.notification-close').addEventListener('click', () => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+          notification.remove();
+        }, 300);
+      });
+      
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          notification.classList.remove('show');
+          setTimeout(() => {
+            if (document.body.contains(notification)) {
+              notification.remove();
+            }
+          }, 300);
+        }
+      }, 5000);
+    }
+    
+    // Creation animation
+    function showCreationAnimation(characterName) {
+      const animation = document.getElementById('creation-animation');
+      const circle = document.querySelector('.creation-circle');
+      const text = document.getElementById('creation-text');
+      
+      // Clear any existing binary elements
+      const existingBinary = document.querySelectorAll('.creation-binary');
+      existingBinary.forEach(el => el.remove());
+      
+      // Update text
+      text.textContent = `${characterName} emerges from the binary void...`;
+      
+      // Add new binary elements
+      const numElements = 100;
+      for (let i = 0; i < numElements; i++) {
+        const binary = document.createElement('div');
+        binary.className = 'creation-binary';
+        binary.textContent = Math.random() > 0.5 ? '1' : '0';
+        
+        // Random position within the circle
+        const angle = Math.random() * 2 * Math.PI;
+        const radius = Math.random() * 90; // 90% of circle radius
+        const x = 100 + Math.cos(angle) * radius;
+        const y = 100 + Math.sin(angle) * radius;
+        
+        binary.style.left = `${x}px`;
+        binary.style.top = `${y}px`;
+        
+        // Randomize animation delay
+        binary.style.animationDelay = `${Math.random() * 2}s`;
+        
+        circle.appendChild(binary);
+      }
+      
+      // Create a new pulse element
+      const pulse = document.createElement('div');
+      pulse.className = 'creation-pulse';
+      circle.appendChild(pulse);
+      
+      // Show the animation
+      animation.classList.add('active');
+      
+      // Hide the animation after animation completes
+      setTimeout(() => {
+        animation.classList.remove('active');
+        
+        // Remove the binary elements and pulse after animation
+        setTimeout(() => {
+          existingBinary.forEach(el => el.remove());
+          pulse.remove();
+        }, 500);
+      }, 5000);
+    }
+    
+    // API Utilities
+    const API = {
+      async get(endpoint) {
+        try {
+          console.log(`Fetching from ${endpoint}...`);
+          const response = await fetch(endpoint);
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`Error response from ${endpoint}: ${response.status} ${response.statusText}`, errorText);
+            return { success: false, error: `Server responded with ${response.status}: ${response.statusText}` };
+          }
+          const data = await response.json();
+          console.log(`Response from ${endpoint}:`, data);
+          return data;
+        } catch (error) {
+          console.error('API Error:', error);
+          return { success: false, error: error.message };
+        }
+      },
+      
+      async post(endpoint, data = {}) {
+        try {
+          console.log(`Posting to ${endpoint}...`, data);
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+          
+          if (!response.ok) {
+            try {
+              const errorText = await response.text();
+              console.error(`Error response from ${endpoint}: ${response.status} ${response.statusText}`, errorText);
+              return { success: false, error: `Server responded with ${response.status}: ${response.statusText}` };
+            } catch (parseError) {
+              console.error('Failed to parse error response:', parseError);
+              return { success: false, error: `Server responded with ${response.status}: ${response.statusText}` };
+            }
+          }
+          
+          const responseData = await response.json();
+          console.log(`Success response from ${endpoint}:`, responseData);
+          return responseData;
+        } catch (error) {
+          console.error('API Error in post:', error);
+          return { success: false, error: error.message };
+        }
+      }
+    };
+    
+    // Agent management functions
+    async function loadAgents() {
+      try {
+        const response = await API.get('/api/test-agents');
+        
+        if (response.success) {
+          renderAgentList(response.agents);
+          updateConversationSelect(response.agents);
+        } else {
+          showNotification('Failed to load agents: ' + response.message, true);
+        }
+      } catch (error) {
+        console.error('Error loading agents:', error);
+        showNotification('Failed to load agents', true);
+      }
+    }
+    
+    function renderAgentList(agents) {
+      const agentList = document.getElementById('agent-list');
+      
+      if (!agents || agents.length === 0) {
+        agentList.innerHTML = '<p>No agents registered yet.</p>';
+        return;
+      }
+      
+      agentList.innerHTML = '';
+      
+      agents.forEach(agent => {
+        const listItem = document.createElement('li');
+        listItem.className = 'agent-item';
+        
+        listItem.innerHTML = `
+          <span class="agent-name">${agent.name}</span>
+          <span class="agent-status ${agent.active ? 'active' : 'inactive'}">${agent.active ? 'Active' : 'Inactive'}</span>
+        `;
+        
+        agentList.appendChild(listItem);
+      });
+    }
+    
+    function updateConversationSelect(agents) {
+      const select = document.getElementById('conversation-select');
+      
+      // Save current value to restore after update
+      const currentValue = select.value;
+      
+      // Clear all options except the first
+      while (select.options.length > 1) {
+        select.remove(1);
+      }
+      
+      // Add new options
+      agents.forEach(agent => {
+        const option = document.createElement('option');
+        option.value = agent.name;
+        option.text = agent.name + (agent.active ? ' (Active)' : '');
+        select.add(option);
+      });
+      
+      // Restore value if it still exists
+      if (agents.some(a => a.name === currentValue)) {
+        select.value = currentValue;
+      }
+    }
+    
+    async function registerAgent(index) {
+      try {
+        console.log(`Detailed: Registering agent with index ${index}`);
+        
+        const response = await API.post(`/api/test-agents/register/${index}`);
+        console.log(`Detailed: Server response for agent ${index}:`, response);
+        
+        if (response.success) {
+          console.log(`Detailed: Successfully registered agent ${response.agentName}`);
+          showNotification(`Agent ${response.agentName} registered`);
+          await loadAgents();
+          return true;
+        } else {
+          console.error(`Detailed: Failed to register agent ${index}:`, response.message);
+          showNotification('Failed to register agent: ' + response.message, true);
+          return false;
+        }
+      } catch (error) {
+        console.error(`Detailed: Exception when registering agent ${index}:`, error);
+        showNotification(`Failed to register agent ${index}: ${error.message}`, true);
+        throw error; // Re-throw so registerAllAgents can track failures
+      }
+    }
+    
+    async function registerAllAgents() {
+      try {
+        showNotification('Starting agent registration...');
+        
+        const agentIndices = [0, 1, 2, 3, 4]; // Indices for all 5 agents
+        let successCount = 0;
+        let failureCount = 0;
+        
+        // Register agents one by one
+        for (const index of agentIndices) {
+          try {
+            console.log(`Registering agent ${index}...`);
+            await registerAgent(index);
+            console.log(`Successfully registered agent ${index}`);
+            successCount++;
+          } catch (error) {
+            console.error(`Failed to register agent ${index}:`, error);
+            failureCount++;
+          }
+          
+          // Brief delay between registrations to avoid overwhelming the server
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        
+        showNotification(`Registered ${successCount} agents successfully. ${failureCount} failed.`);
+        
+        // Reload agent list to show updated status
+        await loadAgents();
+      } catch (error) {
+        console.error('Error in registerAllAgents:', error);
+        showNotification('Error registering agents: ' + error.message, true);
+      }
+    }
+    
+    async function startConversation(agentName) {
+      try {
+        
+        const response = await API.post(`/api/test-agents/start/${agentName}`);
+        
+        if (response.success) {
+          showNotification(`Started conversation with ${agentName}`);
+          await loadAgents();
+          if (document.getElementById('conversation-select').value === agentName) {
+            loadConversationHistory(agentName);
+          }
+        } else {
+          showNotification('Failed to start conversation: ' + response.message, true);
+        }
+      } catch (error) {
+        console.error('Error starting conversation:', error);
+        showNotification('Failed to start conversation', true);
+      }
+    }
+    
+    async function stopConversation(agentName) {
+      try {
+        
+        const response = await API.post(`/api/test-agents/stop/${agentName}`);
+        
+        if (response.success) {
+          showNotification(`Stopped conversation with ${agentName}`);
+          await loadAgents();
+          if (document.getElementById('conversation-select').value === agentName) {
+            loadConversationHistory(agentName);
+          }
+        } else {
+          showNotification('Failed to stop conversation: ' + response.message, true);
+        }
+      } catch (error) {
+        console.error('Error stopping conversation:', error);
+        showNotification('Failed to stop conversation', true);
+      }
+    }
+    
+    async function startAllConversations() {
+      try {
+        
+        const response = await API.get('/api/test-agents');
+        
+        if (response.success) {
+          for (const agent of response.agents) {
+            if (!agent.active) {
+              await startConversation(agent.name);
+            }
+          }
+          
+          showNotification('Started all conversations');
+        } else {
+          showNotification('Failed to get agents: ' + response.message, true);
+        }
+      } catch (error) {
+        console.error('Error starting all conversations:', error);
+        showNotification('Failed to start all conversations', true);
+      }
+    }
+    
+    async function stopAllConversations() {
+      try {
+        
+        const response = await API.get('/api/test-agents');
+        
+        if (response.success) {
+          for (const agent of response.agents) {
+            if (agent.active) {
+              await stopConversation(agent.name);
+            }
+          }
+          
+          showNotification('Stopped all conversations');
+        } else {
+          showNotification('Failed to get agents: ' + response.message, true);
+        }
+      } catch (error) {
+        console.error('Error stopping all conversations:', error);
+        showNotification('Failed to stop all conversations', true);
+      }
+    }
+    
+    async function loadConversationHistory(agentName) {
+      try {
+        if (!agentName) {
+          document.getElementById('chat-window').innerHTML = `
+            <div class="chat-message user">
+              <div class="sender">SYSTEM</div>
+              <div class="message-content">Select an agent to view the conversation.</div>
+            </div>
+          `;
+          return;
+        }
+        
+        console.log(`CONVERSATION DEBUG: Loading conversation for ${agentName}`);
+        
+        const chatWindow = document.getElementById('chat-window');
+        chatWindow.innerHTML = `
+          <div class="loading-container">
+            <div class="loading"></div>
+          </div>
+        `;
+        
+        const response = await API.get(`/api/test-agents/conversation/${agentName}`);
+        console.log(`CONVERSATION DEBUG: Response received for ${agentName}:`, response);
+        
+        if (response.success) {
+          console.log(`CONVERSATION DEBUG: Successful response for ${agentName}`);
+          console.log(`CONVERSATION DEBUG: Messages:`, response.messages);
+          console.log(`CONVERSATION DEBUG: isActive:`, response.isActive);
+          
+          if (!response.messages || !Array.isArray(response.messages)) {
+            console.error(`CONVERSATION DEBUG: Messages is not an array for ${agentName}`, response.messages);
+            chatWindow.innerHTML = `
+              <div class="chat-message user">
+                <div class="sender">SYSTEM</div>
+                <div class="message-content">Invalid message format received. Check console for details.</div>
+              </div>
+            `;
+            return;
+          }
+          
+          // IMPORTANT: Force messages into a proper array format if needed
+          const parsedMessages = response.messages.map(msg => {
+            if (typeof msg === 'string') {
+              try {
+                // Try to parse if it's a stringified object
+                return JSON.parse(msg);
+              } catch (e) {
+                // If not parseable, create a user message
+                return { role: 'user', content: msg };
+              }
+            }
+            return msg;
+          });
+          
+          console.log(`CONVERSATION DEBUG: Parsed messages for ${agentName}:`, parsedMessages);
+          
+          // Show the messages directly in the UI for debugging
+          if (parsedMessages.length === 0) {
+            chatWindow.innerHTML = `
+              <div class="chat-message user">
+                <div class="sender">SYSTEM</div>
+                <div class="message-content">No messages found for ${agentName}</div>
+              </div>
+            `;
+          } else {
+            // Manual rendering for debugging
+            chatWindow.innerHTML = '';
+            
+            for (let i = 0; i < parsedMessages.length; i++) {
+              const msg = parsedMessages[i];
+              const div = document.createElement('div');
+              
+              if (typeof msg === 'object' && msg !== null) {
+                div.className = `chat-message ${msg.role === 'assistant' ? 'assistant' : 'user'}`;
+                div.innerHTML = `
+                  <div class="sender">${msg.role === 'assistant' ? 'AGENT' : 'DM'}</div>
+                  <div class="message-content">${msg.content}</div>
+                `;
+              } else {
+                // Fallback rendering for unexpected message format
+                div.className = 'chat-message user';
+                div.innerHTML = `
+                  <div class="sender">SYSTEM</div>
+                  <div class="message-content">Invalid message format: ${JSON.stringify(msg)}</div>
+                `;
+              }
+              
+              chatWindow.appendChild(div);
+            }
+            
+            // Scroll to bottom
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+          }
+          
+        } else {
+          console.error(`CONVERSATION DEBUG: Failed response for ${agentName}:`, response);
+          chatWindow.innerHTML = `
+            <div class="chat-message user">
+              <div class="sender">SYSTEM</div>
+              <div class="message-content">Failed to load conversation: ${response.message}</div>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('CONVERSATION DEBUG: Error loading conversation:', error);
+        document.getElementById('chat-window').innerHTML = `
+          <div class="chat-message user">
+            <div class="sender">SYSTEM</div>
+            <div class="message-content">Error loading conversation: ${error.message}</div>
+          </div>
+        `;
+      }
+    }
+    
+    function renderConversation(messages, isActive) {
+      const chatWindow = document.getElementById('chat-window');
+      
+      if (!messages || messages.length === 0) {
+        chatWindow.innerHTML = `
+          <div class="chat-message user">
+            <div class="sender">SYSTEM</div>
+            <div class="message-content">No messages yet. ${isActive ? 'Conversation is active.' : 'Conversation is inactive.'}</div>
+          </div>
+        `;
+        return;
+      }
+      
+      // Always rerender all messages - simple and reliable approach
+      chatWindow.innerHTML = '';
+      
+      messages.forEach(message => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${message.role === 'assistant' ? 'assistant' : 'user'}`;
+        
+        messageDiv.innerHTML = `
+          <div class="sender">${message.role === 'assistant' ? 'AGENT' : 'DM'}</div>
+          <div class="message-content">${message.content}</div>
+        `;
+        
+        chatWindow.appendChild(messageDiv);
+      });
+      
+      // Simple scroll to bottom - reliable
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+      
+      // Check for character creation completion
+      const completionPhrases = [
+        "profile has been successfully created",
+        "character profile is complete",
+        "VOID Creator profile successfully created",
+        "your profile has been created"
+      ];
+      
+      for (let i = messages.length - 1; i >= 0; i--) {
+        const message = messages[i];
+        
+        if (message.role === 'user') { // Only check DM messages
+          const hasCompletionPhrase = completionPhrases.some(phrase => 
+            message.content.toLowerCase().includes(phrase.toLowerCase())
+          );
+          
+          if (hasCompletionPhrase) {
+            // Find the character name in nearby messages
+            let characterName = "New Entity";
+            
+            // Look in previous assistant messages for the name
+            for (let j = i - 1; j >= 0; j--) {
+              if (messages[j].role === 'assistant' && messages[j].content.includes("I am") && messages[j].content.includes("my name is")) {
+                const nameParts = messages[j].content.match(/my name is (\w+)/i);
+                if (nameParts && nameParts[1]) {
+                  characterName = nameParts[1];
+                  break;
+                }
+              }
+            }
+            
+            // Look in the DM's message itself
+            const dmMessageNameMatch = message.content.match(/(created for|created success) (\w+)/i);
+            if (dmMessageNameMatch && dmMessageNameMatch[2]) {
+              characterName = dmMessageNameMatch[2];
+            }
+            
+            // Trigger animation if this is a recent message (within last 3)
+            if (i > messages.length - 4) {
+              showCreationAnimation(characterName);
+            }
+            
+            break;
+          }
+        }
+      }
+    }
+    
+    // Character profile functions
+    async function loadCharacterProfiles() {
+      try {
+        console.log('Loading character profiles...');
+        // Don't show any notification during loading
+        
+        // Try the main character profiles endpoint
+        const response = await API.get('/api/character-profiles');
+        
+        console.log('Character profiles API response:', response);
+        
+        if (response.success) {
+          console.log(`Rendering ${response.profiles ? response.profiles.length : 0} profiles`);
+          renderCharacterProfiles(response.profiles);
+        } else {
+          console.error('Failed to load character profiles from main endpoint');
+          
+          // Try the fallback endpoint without showing notification
+          console.log('Trying fallback endpoint...');
+          const fallbackResponse = await API.get('/api/characters/profiles');
+          
+          if (fallbackResponse.success) {
+            console.log(`Rendering ${fallbackResponse.profiles ? fallbackResponse.profiles.length : 0} profiles from fallback`);
+            renderCharacterProfiles(fallbackResponse.profiles);
+          } else {
+            // Only show notification if both attempts fail
+            showNotification('Failed to load character profiles', true);
+            document.getElementById('character-grid').innerHTML = `
+              <div class="dashboard-panel">
+                <h3>ERROR</h3>
+                <p>Failed to load character profiles: ${response.message || 'Unknown error'}</p>
+                <p>Fallback also failed: ${fallbackResponse.message || 'Unknown error'}</p>
+              </div>
+            `;
+          }
+        }
+      } catch (error) {
+        console.error('Error loading character profiles:', error);
+        showNotification('Error loading character profiles', true);
+        document.getElementById('character-grid').innerHTML = `
+          <div class="dashboard-panel">
+            <h3>ERROR</h3>
+            <p>Error loading character profiles: ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+    
+    function renderCharacterProfiles(profiles) {
+      const grid = document.getElementById('character-grid');
+      
+      if (!profiles || profiles.length === 0) {
+        grid.innerHTML = `
+          <div class="dashboard-panel">
+            <h3>NO PROFILES YET</h3>
+            <p>Start agent conversations with the DM to create character profiles.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      console.log('Rendering profiles:', profiles);
+      grid.innerHTML = '';
+      
+      profiles.forEach(profile => {
+        console.log('Processing profile:', profile);
+        
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        
+        // Extra validation and safe access for profile data
+        if (!profile) {
+          console.error('Profile is undefined');
+          return;
+        }
+        
+        // Handle potentially missing nested objects safely
+        const coreIdentity = profile.core_identity || {};
+        const origin = profile.origin || {};
+        const creationAffinity = profile.creation_affinity || { order: 0, chaos: 0, matter: 0, concept: 0 };
+        const nftInfo = profile.nft_info || {};
+        
+        // Get NFT image if available with fallback
+        const imageUrl = nftInfo.image_url || 'img/placeholder.svg';
+        
+        // Get IP explorer link if available
+        const ipLink = nftInfo.ip_id ? 
+          `https://aeneid.explorer.story.foundation/ipa/${nftInfo.ip_id}` : 
+          '#';
+        
+        card.innerHTML = `
+          <img class="character-image" src="${imageUrl}" alt="${coreIdentity.designation || 'Unknown Entity'}">
+          <div class="character-info">
+            <h3 class="character-name">${coreIdentity.designation || 'Unknown Entity'}</h3>
+            <div class="character-role">${profile.creator_role || 'UNKNOWN'}</div>
+            <div class="character-attr">
+              <span class="attr-name">Visual Form:</span> ${coreIdentity.visual_form ? coreIdentity.visual_form.substring(0, 50) + '...' : 'N/A'}
+            </div>
+            <div class="character-attr">
+              <span class="attr-name">Source Code:</span> ${origin.source_code ? origin.source_code.substring(0, 50) + '...' : 'N/A'}
+            </div>
+            <div class="character-attr">
+              <span class="attr-name">Affinities:</span> 
+              Order: ${creationAffinity.order || 0} |
+              Chaos: ${creationAffinity.chaos || 0} |
+              Matter: ${creationAffinity.matter || 0} |
+              Concept: ${creationAffinity.concept || 0}
+            </div>
+            <div class="character-attr">
+              <span class="attr-name">Approach:</span> "${profile.creative_approach ? profile.creative_approach.substring(0, 50) + '...' : 'N/A'}"
+            </div>
+            ${nftInfo.token_id ? `
+              <div class="character-attr">
+                <span class="attr-name">NFT ID:</span> ${nftInfo.token_id}
+              </div>
+            ` : ''}
+            ${nftInfo.ip_id ? `
+              <div class="character-attr">
+                <span class="attr-name">IP Link:</span> <a href="${ipLink}" target="_blank" style="color:#fff;">${nftInfo.ip_id.substring(0, 10)}...</a>
+              </div>
+            ` : ''}
+          </div>
+        `;
+        
+        grid.appendChild(card);
+      });
+    }
+    
+    
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set up binary rain effect
+      setupBinaryRain();
+      
+      // Start ambient sound at low volume
+      const ambientSound = document.getElementById('ambient-sound');
+      ambientSound.volume = 0.1; // Set to 10% volume
+      ambientSound.play().catch(e => console.log('Audio autoplay prevented:', e));
+      
+      // Load initial data
+      loadAgents();
+      loadCharacterProfiles();
+      
+      // Set up event listeners
+      document.getElementById('register-all').addEventListener('click', registerAllAgents);
+      document.getElementById('start-all').addEventListener('click', startAllConversations);
+      document.getElementById('stop-all').addEventListener('click', stopAllConversations);
+      
+      // Set up audio toggle
+      const audioToggle = document.getElementById('audio-toggle');
+      audioToggle.addEventListener('click', () => {
+        if (ambientSound.paused) {
+          ambientSound.play();
+          audioToggle.classList.remove('muted');
+        } else {
+          ambientSound.pause();
+          audioToggle.classList.add('muted');
+        }
+      });
+      
+      document.getElementById('conversation-select').addEventListener('change', (e) => {
+        loadConversationHistory(e.target.value);
+      });
+      
+      document.getElementById('start-conversation').addEventListener('click', () => {
+        const selectedAgent = document.getElementById('conversation-select').value;
+        if (selectedAgent) {
+          startConversation(selectedAgent);
+        } else {
+          showNotification('Please select an agent first', true);
+        }
+      });
+      
+      document.getElementById('stop-conversation').addEventListener('click', () => {
+        const selectedAgent = document.getElementById('conversation-select').value;
+        if (selectedAgent) {
+          stopConversation(selectedAgent);
+        } else {
+          showNotification('Please select an agent first', true);
+        }
+      });
+      
+      document.getElementById('refresh-conversation').addEventListener('click', () => {
+        const selectedAgent = document.getElementById('conversation-select').value;
+        if (selectedAgent) {
+          loadConversationHistory(selectedAgent);
+        } else {
+          showNotification('Please select an agent first', true);
+        }
+      });
+      
+      
+      
+      // Set up polling
+      setInterval(() => {
+        loadAgents();
+        
+        const selectedAgent = document.getElementById('conversation-select').value;
+        if (selectedAgent) {
+          loadConversationHistory(selectedAgent);
+        }
+      }, 5000);
+      
+      // Refresh character profiles every 15 seconds
+      setInterval(() => {
+        loadCharacterProfiles();
+      }, 15000);
+    });
+  </script>
+</body>
+</html>
